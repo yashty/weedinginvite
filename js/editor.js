@@ -142,14 +142,9 @@
 
   const fileBase = () => `invitation-${data.b || "bride"}-${data.g || "groom"}`.replace(/\s+/g, "-");
 
-  $("download").addEventListener("click", async () => {
-    if (!window.html2canvas) return;
-    await document.fonts.ready;
-    const canvas = await html2canvas(preview, { scale: 2, backgroundColor: null, useCORS: true });
-    const a = document.createElement("a");
-    a.download = `${fileBase()}.png`;
-    a.href = canvas.toDataURL("image/png");
-    a.click();
+  bindDownloads($("downloads"), () => ({ data: { ...data }, lang: data.l }), {
+    uiLang: () => uiLang,
+    onVideo: () => { setView("video"); $("side").scrollIntoView({ behavior: FX.reduce ? "auto" : "smooth", block: "start" }); FX.pop($("make-video")); },
   });
 
   /* ---------- video export ---------- */

@@ -25,7 +25,17 @@
     <select id="guest-lang" class="lang-select" aria-label="Language"></select>
     <button type="button" class="btn small" id="watch"><i data-icon="play"></i><span id="watch-label"></span></button>
   </div>
-  <main class="guest-main"><div id="invite"></div></main>
+  <main class="guest-main">
+    <div id="invite"></div>
+    <div class="guest-dl" id="downloads">
+      <h3><i data-icon="download"></i><span id="dl-title"></span></h3>
+      <div class="fmt-row">
+        <button type="button" class="fmt" data-fmt="jpg"><b>JPG</b><span>WhatsApp</span></button>
+        <button type="button" class="fmt" data-fmt="pdf"><b>PDF</b><span>A5</span></button>
+        <button type="button" class="fmt" data-fmt="story"><b>9:16</b><span id="dl-story"></span></button>
+      </div>
+    </div>
+  </main>
 
   <div class="player" id="player" hidden>
     <canvas id="player-canvas"></canvas>
@@ -36,7 +46,9 @@
   <script src="js/i18n.js"></script>
   <script src="js/invite.js"></script>
   <script src="js/video.js"></script>
+  <script src="js/vendor/html-to-image.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/export.js"></script>
   <script>
     hydrateIcons();
     const params = new URLSearchParams(location.hash.slice(1));
@@ -54,6 +66,8 @@
       renderInvite(document.getElementById("invite"), data, lang);
       document.getElementById("watch-label").textContent = t(lang, "inv_watch");
       document.getElementById("close-label").textContent = t(lang, "inv_close");
+      document.getElementById("dl-title").textContent = t(lang, "dl_title");
+      document.getElementById("dl-story").textContent = t(lang, "dl_story");
       if (data.b || data.g) document.title = `${data.b || ""} & ${data.g || ""}`;
       const cover = document.getElementById("cover");
       if (cover) {
@@ -81,6 +95,7 @@
     });
     document.getElementById("player-close").addEventListener("click", () => { player.stop(); box.hidden = true; });
 
+    bindDownloads(document.getElementById("downloads"), () => ({ data, lang }));
     render();
   </script>
 </body>

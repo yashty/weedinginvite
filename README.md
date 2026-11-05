@@ -16,6 +16,13 @@ Live: https://yashty.github.io/weedinginvite/
 - **10 designs:** Royal Maroon, Marigold, Emerald Garden, Ivory Blush, Midnight Gold, Peacock, Lotus, Temple Silk, Mehndi and Sindoor Minimal.
   - Each design has its own colours, frame (double, arch, corners, temple border or line), ornament and background effect.
   - The card and the video draw from the same definition in `js/invite.js`.
+- **Downloads:**
+  - **JPG** (for WhatsApp) and **PNG** (HD) image of the card
+  - **PDF**, A5 width, ready for printing
+  - **9:16 Status / Story** image (1080×1920) for WhatsApp status and Instagram
+  - **MP4 / WebM** video
+
+  The images and PDF use the print version of the card, without the countdown or buttons. Fonts are embedded, so every script comes out exactly as it appears on screen. Guests can also download the JPG, PDF and story image from the invite page.
 - **Guest experience:** an envelope-style cover opens to the card, which has a countdown, a map link and one-tap RSVP over WhatsApp.
 - **Sharing:** the whole invitation is stored in the link, so no database is needed. You can copy the link, share it on WhatsApp, or download the card as a PNG.
 
@@ -35,6 +42,8 @@ In practice that means:
 - small hover and press responses on buttons and links
 - one deliberate animation per page: the hero entrance on the landing page and the envelope opening on the guest page
 
+Card images are captured with [html-to-image](https://github.com/bubkoo/html-to-image) 1.11.13 (MIT, included as `js/vendor/html-to-image.js`). The PDF is written directly by `js/export.js` (one page with the card as a JPEG), so no PDF library is needed.
+
 Animation uses [Motion](https://motion.dev) 14.9.1, included in the repo as `js/vendor/motion.js` (MIT licence in `js/vendor/MOTION-LICENSE.md`). Everything still works without it. When the device asks for reduced motion, the page shows its final state without animating.
 
 ## Files
@@ -48,6 +57,7 @@ Animation uses [Motion](https://motion.dev) 14.9.1, included in the repo as `js/
 | `js/video.js` | Video renderer, music and recording |
 | `js/i18n.js` | Languages and all translations |
 | `js/ui.js` | Icons and Motion helpers |
+| `js/export.js` | PNG, JPG, PDF and story-image downloads |
 
 ## Run locally
 

@@ -88,20 +88,32 @@
         <div class="share-btns">
           <a class="btn small wa" id="wa" target="_blank" rel="noopener"><i data-icon="chat"></i><span data-i18n="ed_whatsapp"></span></a>
           <a class="btn ghost small" id="open" target="_blank" rel="noopener"><i data-icon="external"></i><span data-i18n="ed_open"></span></a>
-          <button type="button" class="btn ghost small" id="download"><i data-icon="download"></i><span data-i18n="ed_download"></span></button>
         </div>
+      </div>
+
+      <div class="downloads" id="downloads">
+        <h3><i data-icon="download"></i><span data-i18n="dl_title"></span></h3>
+        <div class="fmt-row">
+          <button type="button" class="fmt" data-fmt="jpg"><b>JPG</b><span>WhatsApp</span></button>
+          <button type="button" class="fmt" data-fmt="png"><b>PNG</b><span>HD</span></button>
+          <button type="button" class="fmt" data-fmt="pdf"><b>PDF</b><span>A5</span></button>
+          <button type="button" class="fmt" data-fmt="story"><b>9:16</b><span data-i18n="dl_story"></span></button>
+          <button type="button" class="fmt" data-fmt="video"><b>MP4</b><span data-i18n="ed_video_tab"></span></button>
+        </div>
+        <p class="note" data-i18n="dl_hint"></p>
       </div>
     </aside>
 
     <a class="btn jump" href="#side"><i data-icon="eye"></i><span data-i18n="ed_card"></span></a>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="js/vendor/html-to-image.js"></script>
   <script src="js/vendor/motion.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/invite.js"></script>
   <script src="js/video.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/export.js"></script>
   <script src="js/editor.js"></script>
 </body>
 </html>
