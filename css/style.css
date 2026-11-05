@@ -312,7 +312,7 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 .car-info { display: grid; justify-items: center; gap: .5rem; text-align: center; }
 .car-count { font: 600 .74rem/1 var(--royal-font); letter-spacing: .28em; color: var(--accent); font-variant-numeric: tabular-nums; }
 .car-name { font: 500 clamp(1.9rem, 3.4vw, 2.6rem)/1.1 var(--display-font) !important; letter-spacing: -.01em !important; min-height: 1.1em; }
-.car-cta { margin-top: .6rem; }
+.tile.is-active { cursor: pointer; }
 .car-btn { display: inline-grid; place-items: center; width: 52px; height: 52px; padding: 0; border-radius: 50%; background: var(--surface); color: var(--accent); border: var(--card-border); border-color: color-mix(in srgb, var(--gold) 45%, transparent); box-shadow: var(--shadow-sm); transition: transform .5s var(--ease), box-shadow .5s var(--ease), border-color .3s var(--ease), opacity .3s; }
 .car-btn .icon { width: 20px; height: 20px; transition: transform .5s var(--ease); }
 .car-prev .icon { transform: scaleX(-1); }
@@ -328,9 +328,9 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 @media (max-width: 640px) {
   .carousel { --cw: clamp(150px, min(68vw, 36svh), 280px); }
   .car-track { padding-block: 32px 76px; gap: 14px; perspective: 1000px; }
-  .car-btn { width: 48px; height: 48px; }
-  .car-meta { gap: 10px; }
-  .car-cta { width: 100%; max-width: 260px; }
+  /* swipe and tap the card on phones: no arrow buttons */
+  .car-btn { display: none; }
+  .car-meta { grid-template-columns: minmax(0, 1fr); }
   .car-progress { margin-top: 1.6rem; }
 }
 /* Landscape phones / short windows */
