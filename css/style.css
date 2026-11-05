@@ -50,26 +50,7 @@
   --gutter: clamp(16px, 4vw, 40px);
   color-scheme: light;
 }
-/* Mid-dark. Applied by the OS preference unless the visitor picked light, or forced by the toggle.
- * Keep both blocks identical. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #161412; --surface: #262320; --surface-2: #1D1A18;
-    --line: rgba(197, 168, 128, .22); --card-line: rgba(197, 168, 128, .2);
-    --ink: #FBF9F5; --muted: #A8A29E;
-    --gold: #D4AF37; --gold-soft: #4A3F2A; --accent: #D4AF37; --accent-ink: #161412; --accent-soft: #3A2C29;
-    --rose: #B76E79; --blush: #2E2322; --sage: #211E1A; --danger: #FF8A80;
-    --foil: linear-gradient(120deg, #9C7C26 0%, #DDBF5A 24%, #F4E3A1 40%, #D4AF37 56%, #EBD27A 76%, #A8872B 100%);
-    --foil-rose: linear-gradient(120deg, #9A5A64 0%, #D49AA2 32%, #F0C9C9 46%, #B76E79 66%, #8E525C 100%);
-    --btn-bg: linear-gradient(135deg, #E6C968 0%, #D4AF37 52%, #B8942A 100%);
-    --btn-ink: #161412; --btn-edge: #E0BE4C;
-    --glow: rgba(212, 175, 55, .4); --floral-opacity: .3;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 2px 8px -2px rgba(0, 0, 0, .4);
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .7);
-    --shadow-lg: 0 2px 6px rgba(0, 0, 0, .3), 0 50px 90px -40px rgba(0, 0, 0, .9);
-    color-scheme: dark;
-  }
-}
+/* Mid-dark: opt-in via the top-bar toggle (light is the default). */
 :root[data-theme="dark"] {
   --bg: #161412; --surface: #262320; --surface-2: #1D1A18;
   --line: rgba(197, 168, 128, .22); --card-line: rgba(197, 168, 128, .2);
