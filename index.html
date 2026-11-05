@@ -69,7 +69,7 @@
             </div>
             <ul class="lang-list" id="lang-list"></ul>
           </div>
-          <div class="demo-card"><div id="demo-card"></div></div>
+          <div class="demo-card"><span class="demo-badge" id="demo-badge" aria-hidden="true"></span><div id="demo-card"></div></div>
         </div>
       </div>
     </section>
@@ -216,7 +216,12 @@
     function renderDemo() {
       loadFont(demoLang);
       renderInvite(document.getElementById("demo-card"), { ...SAMPLE, t: "marigold", e: SAMPLE.e.slice(1) }, demoLang, { interactive: false });
-      document.querySelectorAll("#lang-list button").forEach((b) => b.classList.toggle("on", b.dataset.lang === demoLang));
+      document.querySelectorAll("#lang-list button").forEach((b) => {
+        const on = b.dataset.lang === demoLang;
+        b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
+      });
+      const badge = document.getElementById("demo-badge");
+      badge.textContent = LANGS[demoLang].name; badge.lang = demoLang; badge.style.fontFamily = `'${LANGS[demoLang].font}', var(--ui-font)`;
     }
 
     let car;
@@ -260,6 +265,17 @@
 
     render();
     car = initCarousel(document.getElementById("carousel"));
+    /* Language tiles: rise in one after another the first time they are seen. */
+    const langList = document.getElementById("lang-list");
+    if (FX.on) {
+      langList.dataset.pre = "";
+      whenVisible(langList, () => {
+        if (!("pre" in langList.dataset)) return;
+        delete langList.dataset.pre;
+        window.Motion.animate(langList.children, { opacity: [0, 1], y: [28, 0], filter: ["blur(8px)", "blur(0px)"] },
+          { duration: 0.9, delay: window.Motion.stagger(0.05), ease: [0.16, 1, 0.3, 1] });
+      }, () => {});
+    }
     runVideo(heroVideo, document.getElementById("hero-video"));
     runVideo(featVideo, document.getElementById("feature-video"));
     FX.intro([...document.querySelectorAll("[data-intro]")]);
