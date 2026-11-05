@@ -42,7 +42,7 @@
     return { ...rest, e: e.filter((ev) => !v || !v.x.includes(ev.id)).map(({ id, ...ev }) => ev) };
   }
   const linkFor = (v) => inviteUrl(publicData(v));
-  const waFor = (v) => { const pd = publicData(v); return `https://wa.me/?text=${encodeURIComponent(`${pd.b || ""} & ${pd.g || ""}\n${linkFor(v)}`)}`; };
+  const waFor = (v) => { const pd = publicData(v); return `https://wa.me/?text=${encodeURIComponent(`${nameOrder(pd)[0] || ""} & ${nameOrder(pd)[1] || ""}\n${linkFor(v)}`)}`; };
 
   fillLangSelect(uiSelect, uiLang);
   fillLangSelect(langSelect, data.l);
@@ -136,10 +136,17 @@
   function fillForm() {
     for (const el of form.elements) if (el.name && el.name in data) el.value = data[el.name] || "";
     langSelect.value = data.l;
+    syncNameOrder();
+  }
+  /* The name fields follow the card: groom's card shows the groom field first. */
+  function syncNameOrder() {
+    const [first, second] = $("name-row").children;
+    first.style.order = data.o === "g" ? 2 : 0; second.style.order = data.o === "g" ? 0 : 1;
   }
 
   /* ---------- location pin ---------- */
   if (data.qr === undefined) data.qr = true;
+  if (data.o === undefined) data.o = "";
   if (!QR_STYLES[data.qs]) data.qs = "rounded";
 
   function renderLoc() {
@@ -262,6 +269,7 @@
       else if (el.dataset.f === "n") renderVersions();
     } else if (el.name) {
       data[el.name] = el.value;
+      if (el.name === "o") syncNameOrder();
       if (el.name === "l") { loadFont(el.value); FX.swap(preview, update); return; }
     }
     update();
@@ -411,7 +419,7 @@
       dl.download = `${fileBase()}.${lastVideo.ext}`;
       const file = new File([lastVideo.blob], dl.download, { type: lastVideo.mime });
       $("video-share").hidden = !(navigator.canShare && navigator.canShare({ files: [file] }));
-      $("video-share").onclick = () => navigator.share({ files: [file], title: `${data.b} & ${data.g}` }).catch(() => {});
+      $("video-share").onclick = () => navigator.share({ files: [file], title: nameOrder(data).join(" & ") }).catch(() => {});
       $("video-result").hidden = false;
       FX.pop($("video-result"));
       label.textContent = t(uiLang, "ed_video_ready");

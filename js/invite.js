@@ -16,6 +16,9 @@ const TEMPLATES = {
   minimal:    { name: "Sindoor Minimal",bg: "#ffffff", bg2: "#f5f1ec", ink: "#1c1917", accent: "#b3261e", soft: "#57534e",               frame: "line",    orn: "line",    fx: "none",    latin: "Playfair Display" },
 };
 
+/* Whose card it is decides who is named first: o === "g" puts the groom first. */
+const nameOrder = (d) => (d.o === "g" ? [d.g, d.b] : [d.b, d.g]);
+
 const SAMPLE = {
   t: "royal", l: "en",
   b: "Ananya", g: "Arjun", h: "The Sharma & Iyer families",
@@ -160,7 +163,7 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
   const p = tpl(data.t);
   const events = compact ? [] : (data.e || []).filter((ev) => eventName(lang, ev));
   const rsvp = (yes) => {
-    const text = `${t(lang, yes ? "rsvp_yes" : "rsvp_no")} ${data.b || ""} & ${data.g || ""}`;
+    const text = `${t(lang, yes ? "rsvp_yes" : "rsvp_no")} ${nameOrder(data)[0] || ""} & ${nameOrder(data)[1] || ""}`;
     return `https://wa.me/${(data.p || "").replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
   };
   const orn = ornamentSvg(p.orn);
@@ -178,9 +181,9 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
       <p class="inv-host">${data.h ? esc(data.h) : L("inv_together")}</p>
       <p class="inv-small">${L("inv_invite")}</p>
       <h1 class="inv-names">
-        <span>${esc(data.b) || "&nbsp;"}</span>
+        <span>${esc(nameOrder(data)[0]) || "&nbsp;"}</span>
         <span class="inv-and">${L("inv_and")}</span>
-        <span>${esc(data.g) || "&nbsp;"}</span>
+        <span>${esc(nameOrder(data)[1]) || "&nbsp;"}</span>
       </h1>
       ${orn}
       ${data.d ? `<p class="inv-label">${L("inv_save")}</p>

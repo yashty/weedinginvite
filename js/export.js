@@ -18,7 +18,7 @@ function saveBlob(blob, name) {
 }
 
 function exportName(data, ext, label = "") {
-  const base = `invitation-${data.b || "bride"}-${data.g || "groom"}${label ? `-${label}` : ""}`.replace(/[\s/\\?%*:|"<>]+/g, "-").replace(/-{2,}/g, "-");
+  const base = `invitation-${nameOrder(data)[0] || (data.o === "g" ? "groom" : "bride")}-${nameOrder(data)[1] || (data.o === "g" ? "bride" : "groom")}${label ? `-${label}` : ""}`.replace(/[\s/\\?%*:|"<>]+/g, "-").replace(/-{2,}/g, "-");
   return `${base}.${ext}`;
 }
 
@@ -159,7 +159,7 @@ function pdfFromJpeg(jpeg, imgW, imgH, title = "") {
 
 /* Run one export by format id. */
 async function exportInvite(fmt, data, lang, label = "") {
-  const title = `${data.b || ""} & ${data.g || ""}`;
+  const title = `${nameOrder(data)[0] || ""} & ${nameOrder(data)[1] || ""}`;
   if (fmt === "png" || fmt === "jpg" || fmt === "pdf") {
     const c = await cardCanvas(data, lang, fmt === "jpg" ? 2 : 3);
     await saveCanvas(c, fmt, exportName(data, fmt, label).replace(/\.[a-z]+$/, ""), title);
