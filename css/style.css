@@ -349,23 +349,24 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 #designs .section-head .divider { display: none; }
 #designs .section-head h2 { font-size: clamp(1.9rem, min(3.6vw, 6vh), 3rem); }
 .carousel { --cw: clamp(150px, min(24vw, calc((100svh - 450px) / 1.5)), 292px); position: relative; isolation: isolate; margin-top: clamp(-8px, -1vw, 0px); }
-.carousel::before { content: ""; position: absolute; left: 50%; top: 4%; width: min(900px, 120vw); height: 70%; transform: translateX(-50%); z-index: -1; pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 26%, transparent), transparent); filter: blur(10px); animation: glow-drift 9s ease-in-out infinite alternate; }
+.carousel::before { display: none; content: ""; position: absolute; left: 50%; top: 4%; width: min(900px, 120vw); height: 70%; transform: translateX(-50%); z-index: -1; pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 26%, transparent), transparent); filter: blur(10px); animation: glow-drift 9s ease-in-out infinite alternate; }
 @keyframes glow-drift { from { transform: translateX(-54%) scale(.92); opacity: .7; } to { transform: translateX(-46%) scale(1.06); opacity: 1; } }
 .car-track { position: relative; display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); padding: clamp(18px, 3.5vh, 40px) calc(50% - var(--cw) / 2) clamp(28px, 6vh, 60px); overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; perspective: 1400px; perspective-origin: 50% 40%; cursor: grab; -webkit-user-select: none; user-select: none; }
 .car-track::-webkit-scrollbar { display: none; }
 .car-track.grabbing { cursor: grabbing; }
 .car-track[data-pre] .tile-preview { opacity: 0; }
 .tile { position: relative; flex: 0 0 var(--cw); display: block; text-decoration: none; color: inherit; scroll-snap-align: center; transform-style: preserve-3d; will-change: transform, opacity; outline-offset: 6px; border-radius: var(--r); transition: filter .6s var(--ease); }
-.tile-preview { position: relative; height: calc(var(--cw) * 1.5); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); padding: 1px; background: var(--foil); transition: box-shadow .7s var(--ease); }
+.tile-preview { position: relative; height: calc(var(--cw) * 1.5); border-radius: var(--r); overflow: hidden; box-shadow: none; padding: 1px; background: var(--foil); transition: box-shadow .7s var(--ease); }
 .tile-preview .invite { font-size: calc(var(--cw) / 25); height: 100%; border-radius: calc(var(--r) - 1px); pointer-events: none; }
 .tile-preview .invite-frame { height: 100%; }
 /* a slow light sweep across the centred card, and again on hover */
 .tile-preview::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .34) 50%, transparent 62%); transform: translateX(-130%); }
-.tile.is-active .tile-preview { box-shadow: var(--shadow-lg), 0 36px 90px -34px var(--glow); }
+.tile.is-active .tile-preview { box-shadow: none; }
 .tile.is-active .tile-preview::after { animation: sweep 1.6s var(--ease) .15s 1; }
 .tile.is-active:hover .tile-preview::after { animation: sweep 1.2s var(--ease) 1; }
 @keyframes sweep { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
-.car-meta { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(12px, 3vw, 40px); width: min(560px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+.car-btn { display: none !important; }
+.car-meta { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: clamp(12px, 3vw, 40px); width: min(560px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
 .car-info { display: grid; justify-items: center; gap: .5rem; text-align: center; }
 .car-count { font: 600 .74rem/1 var(--royal-font); letter-spacing: .28em; color: var(--accent); font-variant-numeric: tabular-nums; }
 .car-name { font: 500 clamp(1.9rem, 3.4vw, 2.6rem)/1.1 var(--display-font) !important; letter-spacing: -.01em !important; min-height: 1.1em; }
