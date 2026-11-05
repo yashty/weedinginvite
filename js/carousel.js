@@ -6,7 +6,6 @@ function initCarousel(root) {
   const track = root.querySelector(".car-track");
   const nameEl = root.querySelector(".car-name");
   const countEl = root.querySelector(".car-count");
-  const cta = root.querySelector(".car-cta");
   const bar = root.querySelector(".car-progress i");
   const prev = root.querySelector(".car-prev"), next = root.querySelector(".car-next");
   const M = window.Motion;
@@ -48,7 +47,6 @@ function initCarousel(root) {
     idx = i;
     tiles.forEach((t, k) => { t.classList.toggle("is-active", k === i); t.tabIndex = k === i ? 0 : -1; t.setAttribute("aria-current", String(k === i)); });
     const t = tiles[i];
-    cta.href = t.href;
     countEl.textContent = `${String(i + 1).padStart(2, "0")} / ${String(tiles.length).padStart(2, "0")}`;
     bar.style.transform = `translateX(${i * 100}%)`;
     prev.disabled = i === 0; next.disabled = i === tiles.length - 1;
