@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Invitation · Shubh Nimantran</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Shubh&nbsp;Nimantran</a>
+    <nav><select id="ui-lang" aria-label="Language"></select></nav>
+  </header>
+
+  <main class="editor">
+    <form id="form" class="panel" autocomplete="off">
+      <h1 data-i18n="ed_title"></h1>
+
+      <div class="row">
+        <label><span data-i18n="ed_language"></span><select name="l" id="inv-lang"></select></label>
+        <label><span data-i18n="ed_template"></span><select name="t" id="inv-tpl"></select></label>
+      </div>
+      <div class="row">
+        <label><span data-i18n="ed_bride"></span><input name="b" maxlength="60"></label>
+        <label><span data-i18n="ed_groom"></span><input name="g" maxlength="60"></label>
+      </div>
+      <label><span data-i18n="ed_host"></span><input name="h" maxlength="120"></label>
+      <div class="row">
+        <label><span data-i18n="ed_date"></span><input type="date" name="d"></label>
+        <label><span data-i18n="ed_time"></span><input type="time" name="tm"></label>
+      </div>
+      <label><span data-i18n="ed_venue"></span><input name="v" maxlength="120"></label>
+      <label><span data-i18n="ed_address"></span><input name="a" maxlength="200"></label>
+      <label><span data-i18n="ed_message"></span><textarea name="m" rows="2" maxlength="300"></textarea></label>
+      <label><span data-i18n="ed_phone"></span><input name="p" type="tel" placeholder="919876543210" maxlength="16"></label>
+
+      <fieldset>
+        <legend data-i18n="ed_events"></legend>
+        <div id="events"></div>
+        <button type="button" class="btn ghost small" id="add-event" data-i18n="ed_add_event"></button>
+      </fieldset>
+
+      <div class="share">
+        <h2 data-i18n="ed_share"></h2>
+        <input id="share-url" readonly>
+        <div class="share-btns">
+          <button type="button" class="btn small" id="copy" data-i18n="ed_copy"></button>
+          <a class="btn small wa" id="wa" target="_blank" rel="noopener" data-i18n="ed_whatsapp"></a>
+          <a class="btn ghost small" id="open" target="_blank" rel="noopener" data-i18n="ed_open"></a>
+          <button type="button" class="btn ghost small" id="download" data-i18n="ed_download"></button>
+        </div>
+      </div>
+    </form>
+
+    <section class="preview-wrap"><div id="preview"></div></section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/invite.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>

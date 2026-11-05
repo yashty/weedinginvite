@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wedding Invitation</title>
+  <meta property="og:title" content="You're invited to our wedding">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="guest">
+  <div class="guest-bar">
+    <label><span id="read-in"></span> <select id="guest-lang"></select></label>
+  </div>
+  <main class="guest-main"><div id="invite"></div></main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/invite.js"></script>
+  <script>
+    const params = new URLSearchParams(location.hash.slice(1));
+    const data = decodeInvite(params.get("d") || "") || SAMPLE;
+    const select = document.getElementById("guest-lang");
+    let lang = LANGS[params.get("l")] ? params.get("l") : (LANGS[data.l] ? data.l : "en");
+
+    function render() {
+      setPageLang(lang);
+      document.getElementById("read-in").textContent = t(lang, "inv_read_in");
+      renderInvite(document.getElementById("invite"), data, lang);
+      if (data.b || data.g) document.title = `${data.b || ""} & ${data.g || ""}`;
+    }
+    fillLangSelect(select, lang);
+    select.addEventListener("change", () => { lang = select.value; render(); });
+    render();
+  </script>
+</body>
+</html>

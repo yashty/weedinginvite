@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shubh Nimantran · Digital Wedding Invitations</title>
+  <meta name="description" content="Create beautiful digital wedding invitations in 13 Indian languages and share them on WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Shubh&nbsp;Nimantran</a>
+    <nav>
+      <a href="#designs" data-i18n="nav_templates">Designs</a>
+      <a href="#features" data-i18n="nav_features">Features</a>
+      <select id="ui-lang" aria-label="Language"></select>
+      <a class="btn small" href="create.html" data-i18n="nav_create">Create invite</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <h1 data-i18n="hero_title">Beautiful wedding invitations, in your language</h1>
+        <p data-i18n="hero_sub"></p>
+        <div class="hero-cta">
+          <a class="btn" href="create.html" data-i18n="cta_create">Create your invite</a>
+          <a class="btn ghost" href="#designs" data-i18n="cta_designs">See designs</a>
+        </div>
+        <div class="lang-chips" id="lang-chips"></div>
+      </div>
+      <div class="hero-card"><div id="hero-invite"></div></div>
+    </section>
+
+    <section id="features" class="section">
+      <h2 data-i18n="features_title"></h2>
+      <div class="features">
+        <article><span class="ico">अ</span><h3 data-i18n="f1_t"></h3><p data-i18n="f1_d"></p></article>
+        <article><span class="ico">↗</span><h3 data-i18n="f2_t"></h3><p data-i18n="f2_d"></p></article>
+        <article><span class="ico">✓</span><h3 data-i18n="f3_t"></h3><p data-i18n="f3_d"></p></article>
+        <article><span class="ico">✿</span><h3 data-i18n="f4_t"></h3><p data-i18n="f4_d"></p></article>
+      </div>
+    </section>
+
+    <section id="designs" class="section">
+      <h2 data-i18n="templates_title"></h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
+  </main>
+
+  <footer class="footer"><p data-i18n="footer"></p></footer>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/invite.js"></script>
+  <script>
+    const select = document.getElementById("ui-lang");
+    let lang = preferredLang();
+
+    function render() {
+      setPageLang(lang);
+      applyI18n(lang);
+      renderInvite(document.getElementById("hero-invite"), { ...SAMPLE, l: lang }, lang, { interactive: false });
+      document.getElementById("gallery").innerHTML = Object.entries(TEMPLATES).map(([id, tpl]) => `
+        <figure class="tile">
+          <div class="tile-preview"><div data-tpl="${id}"></div></div>
+          <figcaption>
+            <span>${tpl.name}</span>
+            <a class="btn small" href="create.html?t=${id}&l=${lang}">${esc(t(lang, "use_template"))}</a>
+          </figcaption>
+        </figure>`).join("");
+      document.querySelectorAll("[data-tpl]").forEach((el) =>
+        renderInvite(el, { ...SAMPLE, t: el.dataset.tpl, e: [] }, lang, { interactive: false }));
+      document.getElementById("lang-chips").innerHTML = Object.entries(LANGS)
+        .map(([c, m]) => `<button class="chip${c === lang ? " on" : ""}" data-lang="${c}">${m.name}</button>`).join("");
+    }
+
+    fillLangSelect(select, lang);
+    select.addEventListener("change", () => { lang = select.value; rememberLang(lang); render(); });
+    document.getElementById("lang-chips").addEventListener("click", (e) => {
+      const c = e.target.dataset.lang;
+      if (c) { lang = c; select.value = c; rememberLang(c); render(); }
+    });
+    render();
+  </script>
+</body>
+</html>
