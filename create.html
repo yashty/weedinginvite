@@ -4,13 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Create Invitation · Shubh Nimantran</title>
-  <meta name="theme-color" content="#faf6f0">
+  <meta name="theme-color" content="#faf6f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#14100e" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a class="skip" href="#main" data-i18n="skip_link">Skip to main content</a>
   <header class="topbar">
     <div class="wrap">
       <a class="brand" href="index.html"><i data-icon="mark"></i><span>Shubh Nimantran</span></a>
@@ -18,9 +20,12 @@
     </div>
   </header>
 
-  <main class="wrap editor">
-    <form id="form" class="form" autocomplete="off">
-      <h1 data-i18n="ed_title"></h1>
+  <main class="wrap editor" id="main">
+    <form id="form" class="form" autocomplete="off" novalidate>
+      <div class="editor-head">
+        <h1 data-i18n="ed_title"></h1>
+        <span class="saved" id="saved" aria-hidden="true"><i></i><span data-i18n="saved_local"></span></span>
+      </div>
 
       <section class="group">
         <h2 data-i18n="ed_details"></h2>
@@ -38,12 +43,13 @@
           <label class="field"><span data-i18n="ed_address"></span><input name="a" maxlength="200"></label>
         </div>
         <label class="field"><span data-i18n="ed_message"></span><textarea name="m" rows="2" maxlength="300"></textarea></label>
-        <label class="field"><span data-i18n="ed_phone"></span><input name="p" type="tel" inputmode="tel" placeholder="919876543210" maxlength="16"></label>
+        <label class="field"><span data-i18n="ed_phone"></span><input name="p" type="tel" inputmode="tel" autocomplete="tel" placeholder="919876543210" maxlength="16" aria-describedby="p-err"><span class="field-error" id="p-err" data-i18n="err_phone" hidden></span></label>
       </section>
 
       <section class="group">
         <h2 data-i18n="ed_events"></h2>
         <div class="events" id="events"></div>
+        <p class="empty" id="events-empty" data-i18n="empty_events" hidden></p>
         <button type="button" class="btn ghost small" id="add-event" style="justify-self:start"><i data-icon="plus"></i><span data-i18n="ed_add_event"></span></button>
       </section>
 

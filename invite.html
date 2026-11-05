@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="guest">
+  <a class="skip" href="#main" data-i18n="skip_link">Skip to main content</a>
   <div class="cover" id="cover">
     <div class="cover-inner">
       <small id="cover-blessing"></small>
@@ -25,7 +26,7 @@
     <select id="guest-lang" class="lang-select" aria-label="Language"></select>
     <button type="button" class="btn small" id="watch"><i data-icon="play"></i><span id="watch-label"></span></button>
   </div>
-  <main class="guest-main">
+  <main class="guest-main" id="main">
     <div id="invite"></div>
     <div class="guest-dl" id="downloads">
       <h3><i data-icon="download"></i><span id="dl-title"></span></h3>
@@ -37,7 +38,7 @@
     </div>
   </main>
 
-  <div class="player" id="player" hidden>
+  <div class="player" id="player" role="dialog" aria-modal="true" aria-label="Video" hidden>
     <canvas id="player-canvas"></canvas>
     <button type="button" class="btn small ghost close" id="player-close" style="background:#fff;color:#1d1512"><i data-icon="close"></i><span id="close-label"></span></button>
   </div>
@@ -65,6 +66,7 @@
       document.body.style.setProperty("--script-font", `"${LANGS[lang].font}"`);
       renderInvite(document.getElementById("invite"), data, lang);
       document.getElementById("watch-label").textContent = t(lang, "inv_watch");
+      document.querySelector(".skip").textContent = t(lang, "skip_link");
       document.getElementById("close-label").textContent = t(lang, "inv_close");
       document.getElementById("dl-title").textContent = t(lang, "dl_title");
       document.getElementById("dl-story").textContent = t(lang, "dl_story");
@@ -87,13 +89,28 @@
       FX.openCover(document.getElementById("cover"), document.getElementById("invite")));
 
     const box = document.getElementById("player");
-    document.getElementById("watch").addEventListener("click", async () => {
+    const watchBtn = document.getElementById("watch");
+    const closeBtn = document.getElementById("player-close");
+    function closePlayer() {
+      if (box.hidden) return;
+      player.stop();
+      box.hidden = true;
+      watchBtn.focus();
+    }
+    watchBtn.addEventListener("click", async () => {
       box.hidden = false;
+      closeBtn.focus();
       FX.pop(box.querySelector("canvas"));
       await player.prepare();
       await player.playWithMusic();
     });
-    document.getElementById("player-close").addEventListener("click", () => { player.stop(); box.hidden = true; });
+    closeBtn.addEventListener("click", closePlayer);
+    box.addEventListener("click", (e) => { if (e.target === box) closePlayer(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closePlayer();
+      if (e.key === "Tab" && !box.hidden) { e.preventDefault(); closeBtn.focus(); } // keep focus inside the dialog
+    });
+    document.getElementById("open-btn").focus();
 
     bindDownloads(document.getElementById("downloads"), () => ({ data, lang }));
     render();

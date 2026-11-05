@@ -82,3 +82,40 @@ function whenVisible(el, onShow, onHide) {
     entries.forEach((e) => (e.isIntersecting ? onShow() : onHide()));
   }, { threshold: 0.15 }).observe(el);
 }
+
+/* Polite screen-reader announcement (does not move focus). */
+function announce(msg) {
+  let r = document.getElementById("sr-status");
+  if (!r) {
+    r = document.createElement("div");
+    r.id = "sr-status";
+    r.className = "sr-only";
+    r.setAttribute("role", "status");
+    r.setAttribute("aria-live", "polite");
+    document.body.appendChild(r);
+  }
+  r.textContent = "";
+  setTimeout(() => { r.textContent = msg; }, 30);
+}
+
+/* Small toast with an optional action (e.g. Undo). Auto-dismisses after 5 s. */
+function toast(msg, { action, onAction, ms = 5000 } = {}) {
+  document.querySelectorAll(".toast").forEach((x) => x.remove());
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.setAttribute("role", "status");
+  el.setAttribute("aria-live", "polite");
+  el.innerHTML = `<span></span>${action ? "<button type=\"button\"></button>" : ""}`;
+  el.firstElementChild.textContent = msg;
+  let timer;
+  const close = () => { clearTimeout(timer); el.remove(); };
+  if (action) {
+    const b = el.querySelector("button");
+    b.textContent = action;
+    b.addEventListener("click", () => { close(); onAction && onAction(); });
+  }
+  document.body.appendChild(el);
+  FX.pop(el);
+  timer = setTimeout(close, ms);
+  return close;
+}

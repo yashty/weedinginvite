@@ -45,7 +45,7 @@ async function embeddedFontCss(families, text) {
   };
   const out = [];
   for (const fam of families) {
-    const spec = fam === "Manrope" ? "Manrope:wght@400;500;600" : `${fam.replace(/ /g, "+")}:wght@400;600;700`;
+    const spec = fam === "Manrope" ? "Manrope:wght@400;500;600" : fontSpec(fam);
     let css;
     try { css = await (await fetch(`https://fonts.googleapis.com/css2?family=${spec.replace(/ /g, "+")}&display=swap`)).text(); } catch (_) { continue; }
     for (const face of css.match(/@font-face\s*{[^}]*}/g) || []) {
@@ -72,10 +72,10 @@ async function cardCanvas(data, lang, pixelRatio = 2) {
     loadFont(lang);
     renderInvite(card, data, lang, { interactive: false });
     card.style.borderRadius = "0";
-    const fams = [LANGS[lang].font, tpl(data.t).latin];
-    await Promise.all(fams.flatMap((f) => ["400", "600", "700"].map((w) => document.fonts.load(`${w} 20px "${f}"`, card.textContent.slice(0, 200)).catch(() => null))));
+    const fams = [LANGS[lang].font, tpl(data.t).latin, tpl(data.t).names].filter(Boolean);
+    await Promise.all(fams.flatMap((f) => ["400", "600", "700"].map((w) => document.fonts.load(`${f === "Great Vibes" ? "400" : w} 20px "${f}"`, card.textContent.slice(0, 200)).catch(() => null))));
     await document.fonts.ready;
-    const families = [...new Set([LANGS[lang].font, tpl(data.t).latin, "Manrope"])];
+    const families = [...new Set([LANGS[lang].font, tpl(data.t).latin, tpl(data.t).names, "Manrope"].filter(Boolean))];
     const fontEmbedCSS = await embeddedFontCss(families, card.textContent + "0123456789:·“”");
     const opts = { pixelRatio, skipAutoScale: true, backgroundColor: tpl(data.t).bg, fontEmbedCSS };
     // Safari sometimes paints web fonts only on the second pass.

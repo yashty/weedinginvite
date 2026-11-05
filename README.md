@@ -47,6 +47,18 @@ In practice that means:
 - small hover and press responses on buttons and links
 - one deliberate animation per page: the hero entrance on the landing page and the envelope opening on the guest page
 
+The UI was then checked against the [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) checklist. That led to:
+
+- touch targets of at least 44px, and 16px form text on phones (so iPhones don't zoom in)
+- phone-number checks when you leave the field, with the error shown next to it
+- an Undo message after deleting a ceremony or version
+- empty states, and a "Saved on this device" note
+- a skip-to-content link and spoken status messages
+- a video player that closes with Escape and returns keyboard focus to where it was
+- a consistent shadow scale, and a dark-mode browser colour
+- the Great Vibes script face for couples' names on the Ivory Blush and Lotus designs
+- every design's text measured at 4.5:1 contrast or better
+
 Card images are captured with [html-to-image](https://github.com/bubkoo/html-to-image) 1.11.13 (MIT, included as `js/vendor/html-to-image.js`). The PDF is written directly by `js/export.js` (one page with the card as a JPEG), so no PDF library is needed.
 
 Animation uses [Motion](https://motion.dev) 14.9.1, included in the repo as `js/vendor/motion.js` (MIT licence in `js/vendor/MOTION-LICENSE.md`). Everything still works without it. When the device asks for reduced motion, the page shows its final state without animating.

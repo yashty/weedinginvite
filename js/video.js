@@ -101,6 +101,8 @@ class InviteVideo {
     this.p = tpl(data.t);
     const fams = this.lang === "en" ? [this.p.latin] : [LANGS[this.lang].font, this.p.latin];
     this.family = fams.map((f) => `"${f}"`).join(", ") + ", serif";
+    this.nameFamily = [this.p.names || this.p.latin, ...fams].map((f) => `"${f}"`).join(", ") + ", serif";
+    this.nameWeight = this.p.names ? 400 : 700;
     this.events = (data.e || []).filter((ev) => eventName(this.lang, ev)).slice(0, 5);
     const sc = [{ id: "open", dur: 3.4 }, { id: "names", dur: 4.4 }];
     if (data.d || data.v) sc.push({ id: "when", dur: 4.6 });
@@ -119,13 +121,15 @@ class InviteVideo {
   async prepare() {
     if (!document.fonts) return;
     const sample = [this.data.b, this.data.g, t(this.lang, "inv_invite")].join(" ");
-    const fams = this.lang === "en" ? [this.p.latin] : [LANGS[this.lang].font, this.p.latin];
+    const fams = (this.lang === "en" ? [this.p.latin] : [LANGS[this.lang].font, this.p.latin]).concat(this.p.names ? [this.p.names] : []);
     loadFont(this.lang);
     await Promise.all(fams.flatMap((f) => ["400", "700"].map((w) => document.fonts.load(`${w} 40px "${f}"`, sample).catch(() => null))));
   }
 
   /* text helpers */
-  font(size, weight = 400, italic = false) { return `${italic ? "italic " : ""}${weight} ${size}px ${this.family}`; }
+  font(size, weight = 400, italic = false, names = false) {
+    return `${italic ? "italic " : ""}${names ? this.nameWeight : weight} ${names ? Math.round(size * (this.p.names ? 1.15 : 1)) : size}px ${names ? this.nameFamily : this.family}`;
+  }
 
   wrap(text, maxW) {
     const { ctx } = this;
@@ -141,15 +145,15 @@ class InviteVideo {
   }
 
   /* Draw centred text that enters with a rise, fade and un-blur. k = 0..1 progress of its entrance. */
-  text(str, y, { size = 32, weight = 400, color, k = 1, alpha = 1, maxW = VIDEO_W - 160, italic = false, lh = 1.3 } = {}) {
+  text(str, y, { size = 32, weight = 400, color, k = 1, alpha = 1, maxW = VIDEO_W - 160, italic = false, lh = 1.3, names = false } = {}) {
     if (!str) return 0;
     const { ctx } = this;
     const e = ease(clamp01(k));
     ctx.save();
-    ctx.font = this.font(size, weight, italic);
+    ctx.font = this.font(size, weight, italic, names);
     // shrink long single lines (names) before wrapping
     let s = size;
-    while (s > size * 0.6 && ctx.measureText(str).width > maxW && !/\s/.test(str.trim())) { s -= 2; ctx.font = this.font(s, weight, italic); }
+    while (s > size * 0.6 && ctx.measureText(str).width > maxW && !/\s/.test(str.trim())) { s -= 2; ctx.font = this.font(s, weight, italic, names); }
     const lines = this.wrap(str, maxW);
     ctx.globalAlpha = alpha * e;
     ctx.fillStyle = color || this.p.ink;
@@ -321,9 +325,9 @@ class InviteVideo {
     }
 
     if (sc.id === "names") {
-      this.text(data.b, cy - 140, { size: 112, weight: 700, color: p.accent, k: k(0.1, 1.1), alpha: A });
+      this.text(data.b, cy - 140, { size: 112, weight: 700, color: p.accent, k: k(0.1, 1.1), alpha: A, names: true });
       this.text(T("inv_and"), cy, { size: 44, k: k(0.6), alpha: A });
-      this.text(data.g, cy + 140, { size: 112, weight: 700, color: p.accent, k: k(0.9, 1.1), alpha: A });
+      this.text(data.g, cy + 140, { size: 112, weight: 700, color: p.accent, k: k(0.9, 1.1), alpha: A, names: true });
       this.ornament(cy + 270, 1.5, k(1.4, 1.2), A);
     }
 
@@ -362,7 +366,7 @@ class InviteVideo {
     if (sc.id === "close") {
       let y = cy - 240;
       y += this.text(T("inv_save"), y, { size: 28, color: p.accent, k: k(0.1) }) + 50;
-      y += this.text(`${data.b || ""} ${T("inv_and")} ${data.g || ""}`, y, { size: 72, weight: 700, color: p.accent, k: k(0.3, 1.1), maxW: VIDEO_W - 140 });
+      y += this.text(`${data.b || ""} ${T("inv_and")} ${data.g || ""}`, y, { size: 72, weight: 700, color: p.accent, k: k(0.3, 1.1), maxW: VIDEO_W - 140, names: true });
       this.ornament(y + 10, 1.5, k(0.7, 1.2));
       y += 100;
       y += this.text(fmtDate(lang, data.d), y, { size: 36, k: k(1.0) }) + 30;

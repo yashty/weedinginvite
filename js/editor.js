@@ -76,7 +76,11 @@
       <input class="wide" data-f="v" value="${esc(ev.v)}" placeholder="${esc(t(uiLang, "ed_venue"))}">
     </div>`;
   }
-  function renderEvents() { eventsBox.innerHTML = data.e.map(eventRow).join(""); renderVersions(); }
+  function renderEvents() {
+    eventsBox.innerHTML = data.e.map(eventRow).join("");
+    $("events-empty").hidden = data.e.length > 0;
+    renderVersions();
+  }
 
   const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3l4.7-5"/></svg>';
   function countText(v) {
@@ -144,7 +148,13 @@
   }
 
   function update() {
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch (_) { /* storage unavailable */ }
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      const saved = $("saved");
+      saved.classList.add("on");
+      clearTimeout(saved._t);
+      saved._t = setTimeout(() => saved.classList.remove("on"), 1600);
+    } catch (_) { /* storage unavailable */ }
     const pd = publicData();
     renderInvite(preview, pd, data.l);
     const url = inviteUrl(pd);
@@ -202,10 +212,21 @@
   eventsBox.addEventListener("click", (e) => {
     const b = e.target.closest("[data-remove]");
     if (!b) return;
-    const [gone] = data.e.splice(Number(b.dataset.remove), 1);
+    const at = Number(b.dataset.remove);
+    const [gone] = data.e.splice(at, 1);
+    const hadIn = data.vs.filter((v) => v.x.includes(gone.id)).map((v) => v.id);
     data.vs.forEach((v) => { v.x = v.x.filter((id) => id !== gone.id); });
     renderEvents();
     update();
+    toast(`${t(uiLang, "toast_removed")}: ${eventName(uiLang, gone) || t(uiLang, "ed_event_name")}`, {
+      action: t(uiLang, "toast_undo"),
+      onAction: () => {
+        data.e.splice(at, 0, gone);
+        data.vs.forEach((v) => { if (hadIn.includes(v.id)) v.x.push(gone.id); });
+        renderEvents();
+        update();
+      },
+    });
   });
 
   $("add-event").addEventListener("click", () => {
@@ -221,10 +242,21 @@
     if (!row) return;
     const v = version(row.dataset.vid);
     if (e.target.closest("[data-vremove]")) {
+      const at = data.vs.indexOf(v);
+      const wasActive = data.av === v.id;
       data.vs = data.vs.filter((x) => x !== v);
-      if (data.av === v.id) data.av = "all";
+      if (wasActive) data.av = "all";
       renderVersions();
       update();
+      toast(`${t(uiLang, "toast_removed")}: ${versionName(v)}`, {
+        action: t(uiLang, "toast_undo"),
+        onAction: () => {
+          data.vs.splice(at, 0, v);
+          if (wasActive) data.av = v.id;
+          renderVersions();
+          update();
+        },
+      });
     } else if (e.target.closest("[data-vshow]")) {
       showVersion(v.id);
       if (matchMedia("(max-width: 960px)").matches) $("side").scrollIntoView({ behavior: FX.reduce ? "auto" : "smooth" });
@@ -233,6 +265,7 @@
       try { await navigator.clipboard.writeText(linkFor(v)); } catch (_) { prompt("", linkFor(v)); }
       const label = btn.querySelector("span");
       label.textContent = t(uiLang, "ed_copied");
+      announce(t(uiLang, "ed_copied"));
       setTimeout(() => { label.textContent = t(uiLang, "ed_copy"); }, 1800);
     }
   });
@@ -260,7 +293,20 @@
     try { await navigator.clipboard.writeText(input.value); } catch (_) { input.select(); document.execCommand("copy"); }
     const label = e.currentTarget.querySelector("span");
     label.textContent = t(uiLang, "ed_copied");
+    announce(t(uiLang, "ed_copied"));
     setTimeout(() => { label.textContent = t(uiLang, "ed_copy"); }, 1800);
+  });
+
+  /* phone: validate when the field is left, not on every keystroke */
+  const phone = form.elements.p;
+  const phoneOk = (v) => !v || /^\+?\d[\d\s-]{8,15}$/.test(v.trim()) && v.replace(/\D/g, "").length >= 10;
+  phone.addEventListener("blur", () => {
+    const bad = !phoneOk(phone.value);
+    phone.setAttribute("aria-invalid", bad);
+    $("p-err").hidden = !bad;
+  });
+  phone.addEventListener("input", () => {
+    if (phone.getAttribute("aria-invalid") === "true" && phoneOk(phone.value)) { phone.setAttribute("aria-invalid", "false"); $("p-err").hidden = true; }
   });
 
   const fileBase = () => exportName(data, "x", version() ? versionName(version()) : "").slice(0, -2);
@@ -302,6 +348,7 @@
       $("video-result").hidden = false;
       FX.pop($("video-result"));
       label.textContent = t(uiLang, "ed_video_ready");
+      announce(t(uiLang, "ed_video_ready"));
     } catch (err) {
       $("video-note").textContent = t(uiLang, "ed_video_unsupported");
       label.textContent = t(uiLang, "ed_video");

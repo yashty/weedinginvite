@@ -5,14 +5,14 @@
 
 const TEMPLATES = {
   royal:      { name: "Royal Maroon",   bg: "#6b0f1a", bg2: "#3d0610", ink: "#f8e7c4", accent: "#e2b35a", soft: "rgba(248,231,196,.78)", frame: "double",  orn: "paisley", fx: "sparkle", latin: "Cormorant Garamond" },
-  marigold:   { name: "Marigold",       bg: "#fff3d6", bg2: "#ffe1a6", ink: "#4f2405", accent: "#b9480a", soft: "#7a4a22",               frame: "corners", orn: "lotus",   fx: "petals",  latin: "Cormorant Garamond", petal: "#f28c1b" },
+  marigold:   { name: "Marigold",       bg: "#fff3d6", bg2: "#ffe1a6", ink: "#4f2405", accent: "#a33f09", soft: "#7a4a22",               frame: "corners", orn: "lotus",   fx: "petals",  latin: "Cormorant Garamond", petal: "#f28c1b" },
   emerald:    { name: "Emerald Garden", bg: "#0f3d2e", bg2: "#06231a", ink: "#eaf5ec", accent: "#d8b867", soft: "rgba(234,245,236,.78)", frame: "arch",    orn: "leaf",    fx: "leaves",  latin: "Marcellus", petal: "#6fae7c" },
-  ivory:      { name: "Ivory Blush",    bg: "#fffaf6", bg2: "#f6e4e0", ink: "#463535", accent: "#a5505b", soft: "#7d6464",               frame: "line",    orn: "line",    fx: "petals",  latin: "Playfair Display", petal: "#e7a9b0" },
+  ivory:      { name: "Ivory Blush",    bg: "#fffaf6", bg2: "#f6e4e0", ink: "#463535", accent: "#94434e", soft: "#7d6464",               frame: "line",    orn: "line",    fx: "petals",  latin: "Playfair Display", names: "Great Vibes", petal: "#e7a9b0" },
   midnight:   { name: "Midnight Gold",  bg: "#101a33", bg2: "#070d1d", ink: "#f1e9d8", accent: "#d9b46a", soft: "rgba(241,233,216,.75)", frame: "arch",    orn: "mandala", fx: "sparkle", latin: "Cormorant Garamond" },
   peacock:    { name: "Peacock",        bg: "#0b4f5c", bg2: "#05303a", ink: "#eef8f6", accent: "#e8c15a", soft: "rgba(238,248,246,.78)", frame: "double",  orn: "mandala", fx: "sparkle", latin: "Marcellus" },
-  lotus:      { name: "Lotus",          bg: "#fde9ec", bg2: "#f7cdd5", ink: "#4e1a28", accent: "#a52a45", soft: "#7c4453",               frame: "arch",    orn: "lotus",   fx: "petals",  latin: "Playfair Display", petal: "#e87d93" },
+  lotus:      { name: "Lotus",          bg: "#fde9ec", bg2: "#f7cdd5", ink: "#4e1a28", accent: "#a52a45", soft: "#7c4453",               frame: "arch",    orn: "lotus",   fx: "petals",  latin: "Playfair Display", names: "Great Vibes", petal: "#e87d93" },
   kanjivaram: { name: "Temple Silk",    bg: "#8a1020", bg2: "#560711", ink: "#fff1d6", accent: "#f0b429", soft: "rgba(255,241,214,.8)",  frame: "temple",  orn: "mandala", fx: "sparkle", latin: "Marcellus" },
-  henna:      { name: "Mehndi",         bg: "#f4ecd8", bg2: "#e4d4ad", ink: "#353216", accent: "#5e6b17", soft: "#5f5a36",               frame: "corners", orn: "leaf",    fx: "leaves",  latin: "Cormorant Garamond", petal: "#8a9a3a" },
+  henna:      { name: "Mehndi",         bg: "#f4ecd8", bg2: "#e4d4ad", ink: "#353216", accent: "#515d12", soft: "#5f5a36",               frame: "corners", orn: "leaf",    fx: "leaves",  latin: "Cormorant Garamond", petal: "#8a9a3a" },
   minimal:    { name: "Sindoor Minimal",bg: "#ffffff", bg2: "#f5f1ec", ink: "#1c1917", accent: "#b3261e", soft: "#57534e",               frame: "line",    orn: "line",    fx: "none",    latin: "Playfair Display" },
 };
 
@@ -135,13 +135,18 @@ function applyPalette(el, id) {
   el.style.setProperty("--c-accent", p.accent);
   el.style.setProperty("--c-soft", p.soft);
   el.style.setProperty("--c-latin", `"${p.latin}"`);
+  el.style.setProperty("--c-names", `"${p.names || p.latin}"`);
+  el.style.setProperty("--c-names-w", p.names ? "400" : "700");
 }
+
+/* Font weights available per Google family (script faces ship a single weight). */
+const fontSpec = (f) => (f === "Great Vibes" ? "Great+Vibes" : `${f.replace(/ /g, "+")}:wght@400;600;700`);
 
 /* Latin display fonts used by templates (loaded once). */
 (function loadLatinFonts() {
   if (typeof document === "undefined") return;
-  const fams = [...new Set(Object.values(TEMPLATES).map((x) => x.latin))]
-    .map((f) => `family=${f.replace(/ /g, "+")}:wght@400;600;700`).join("&");
+  const fams = [...new Set(Object.values(TEMPLATES).flatMap((x) => [x.latin, x.names].filter(Boolean)))]
+    .map((f) => `family=${fontSpec(f)}`).join("&");
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = `https://fonts.googleapis.com/css2?${fams}&display=swap`;
