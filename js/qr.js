@@ -9,7 +9,13 @@ const QR_STYLES = {
   dots:     { name: "Dots",     dots: "dots",           sq: "dot",           dot: "dot" },
   classy:   { name: "Classy",   dots: "classy-rounded", sq: "extra-rounded", dot: "square" },
   gradient: { name: "Gradient", dots: "rounded",        sq: "extra-rounded", dot: "dot", gradient: true },
-  emblem:   { name: "Emblem",   dots: "extra-rounded",  sq: "extra-rounded", dot: "dot", logo: true },
+  emblem:   { name: "Lotus",    dots: "extra-rounded",  sq: "extra-rounded", dot: "dot", logo: "mark" },
+  soft:     { name: "Soft",     dots: "extra-rounded",  sq: "extra-rounded", dot: "dot" },
+  leaf:     { name: "Leaf",     dots: "classy-rounded", sq: "extra-rounded", dot: "dot" },
+  bold:     { name: "Bold",     dots: "extra-rounded",  sq: "square",        dot: "square", gradient: true },
+  heart:    { name: "Heart",    dots: "rounded",        sq: "extra-rounded", dot: "dot", logo: "heart" },
+  star:     { name: "Star",     dots: "classy-rounded", sq: "square",        dot: "square", logo: "star" },
+  pixel:    { name: "Pixel",    dots: "square",         sq: "extra-rounded", dot: "dot" },
 };
 
 /* A Google Maps link: exact pin when set, otherwise a search for the venue text. */
@@ -33,8 +39,8 @@ function qrColors(tplId) {
     : { tile: "#ffffff", dots: p.ink, corners: p.accent, accent: p.accent };
 }
 
-function emblemDataUrl(color) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS.mark}</svg>`;
+function emblemDataUrl(color, key = "mark") {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[key] || ICON_PATHS.mark}</svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
@@ -48,7 +54,8 @@ function makeQR(url, tplId, styleId = "rounded", size = 240, type = "svg") {
     data: url,
     margin: Math.round(size * 0.04),
     qrOptions: { errorCorrectionLevel: s.logo ? "H" : "Q" },
-    image: s.logo ? emblemDataUrl(c.accent) : undefined,
+    shape: s.shape || "square",
+    image: s.logo ? emblemDataUrl(c.accent, s.logo) : undefined,
     imageOptions: { hideBackgroundDots: true, imageSize: 0.32, margin: Math.round(size * 0.012) },
     backgroundOptions: { color: c.tile },
     dotsOptions: s.gradient
