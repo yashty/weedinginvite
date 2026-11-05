@@ -26,9 +26,17 @@
         <h1 data-i18n="ed_title"></h1>
         <span class="saved" id="saved" aria-hidden="true"><i></i><span data-i18n="saved_local"></span></span>
       </div>
+      <p class="editor-sub" data-i18n="ed_sub"></p>
+      <nav class="stepper" id="stepper" aria-label="Steps">
+        <button type="button" data-go="1" aria-current="step"><b>1</b><span data-i18n="st1"></span></button>
+        <button type="button" data-go="2"><b>2</b><span data-i18n="st2"></span></button>
+        <button type="button" data-go="3"><b>3</b><span data-i18n="st3"></span></button>
+        <button type="button" data-go="4"><b>4</b><span data-i18n="st4"></span></button>
+      </nav>
 
-      <section class="group">
+      <section class="group" data-step="1">
         <h2 data-i18n="ed_details"></h2>
+        <p class="note" data-i18n="hint1"></p>
         <label class="field"><span data-i18n="ed_cardof"></span>
           <select name="o"><option value="" data-i18n="ed_card_bride"></option><option value="g" data-i18n="ed_card_groom"></option></select>
         </label>
@@ -57,14 +65,15 @@
         <label class="field"><span data-i18n="ed_phone"></span><input name="p" type="tel" inputmode="tel" autocomplete="tel" placeholder="919876543210" maxlength="16" aria-describedby="p-err"><span class="field-error" id="p-err" data-i18n="err_phone" hidden></span></label>
       </section>
 
-      <section class="group">
+      <section class="group" data-step="2">
         <h2 data-i18n="ed_events"></h2>
+        <p class="note" data-i18n="hint2"></p>
         <div class="events" id="events"></div>
         <p class="empty" id="events-empty" data-i18n="empty_events" hidden></p>
         <button type="button" class="btn ghost small" id="add-event" style="justify-self:start"><i data-icon="plus"></i><span data-i18n="ed_add_event"></span></button>
       </section>
 
-      <section class="group" id="versions-group">
+      <section class="group" id="versions-group" data-step="2">
         <h2 data-i18n="ver_title"></h2>
         <p class="note" data-i18n="ver_desc"></p>
         <div class="versions" id="versions"></div>
@@ -72,12 +81,13 @@
         <button type="button" class="btn ghost small" id="add-version" style="justify-self:start"><i data-icon="plus"></i><span data-i18n="ver_add"></span></button>
       </section>
 
-      <section class="group">
+      <section class="group" data-step="3">
         <h2 data-i18n="ed_template"></h2>
+        <p class="note" data-i18n="hint3"></p>
         <div class="swatches" id="swatches" role="group"></div>
       </section>
 
-      <section class="group" id="qr-group">
+      <section class="group" id="qr-group" data-step="3">
         <h2 data-i18n="qr_title"></h2>
         <label class="toggle"><span><i data-icon="qr"></i><span data-i18n="qr_show"></span></span><input type="checkbox" id="qr-show" checked></label>
         <div class="field"><span data-i18n="qr_style"></span>
@@ -89,10 +99,42 @@
         </div>
       </section>
 
-      <section class="group">
+      <section class="group" data-step="3">
         <h2 data-i18n="ed_language"></h2>
         <select name="l" id="inv-lang"></select>
       </section>
+
+      <section class="group" id="share-group" data-step="4">
+        <h2 data-i18n="ed_share_h"></h2>
+        <p class="note" data-i18n="hint4"></p>
+      <div class="share">
+        <div class="share-link">
+          <input id="share-url" readonly aria-label="Invitation link">
+          <button type="button" class="btn small" id="copy"><i data-icon="link"></i><span data-i18n="ed_copy"></span></button>
+        </div>
+        <div class="share-btns">
+          <a class="btn small wa" id="wa" target="_blank" rel="noopener"><i data-icon="chat"></i><span data-i18n="ed_whatsapp"></span></a>
+          <a class="btn ghost small" id="open" target="_blank" rel="noopener"><i data-icon="external"></i><span data-i18n="ed_open"></span></a>
+        </div>
+      </div>
+
+      <div class="downloads" id="downloads">
+        <h3><i data-icon="download"></i><span data-i18n="dl_title"></span></h3>
+        <div class="fmt-row">
+          <button type="button" class="fmt" data-fmt="jpg"><b>JPG</b><span>WhatsApp</span></button>
+          <button type="button" class="fmt" data-fmt="png"><b>PNG</b><span>HD</span></button>
+          <button type="button" class="fmt" data-fmt="pdf"><b>PDF</b><span>A5</span></button>
+          <button type="button" class="fmt" data-fmt="story"><b>9:16</b><span data-i18n="dl_story"></span></button>
+          <button type="button" class="fmt" data-fmt="video"><b>MP4</b><span data-i18n="ed_video_tab"></span></button>
+        </div>
+        <p class="note" data-i18n="dl_hint"></p>
+      </div>
+      </section>
+
+      <div class="step-nav" id="step-nav">
+        <button type="button" class="btn ghost" id="step-back"><i data-icon="arrow"></i><span data-i18n="ed_back"></span></button>
+        <button type="button" class="btn" id="step-next"><span data-i18n="ed_next"></span><i data-icon="arrow"></i></button>
+      </div>
     </form>
 
     <aside class="side" id="side">
@@ -118,28 +160,6 @@
         </div>
       </div>
 
-      <div class="share">
-        <div class="share-link">
-          <input id="share-url" readonly aria-label="Invitation link">
-          <button type="button" class="btn small" id="copy"><i data-icon="link"></i><span data-i18n="ed_copy"></span></button>
-        </div>
-        <div class="share-btns">
-          <a class="btn small wa" id="wa" target="_blank" rel="noopener"><i data-icon="chat"></i><span data-i18n="ed_whatsapp"></span></a>
-          <a class="btn ghost small" id="open" target="_blank" rel="noopener"><i data-icon="external"></i><span data-i18n="ed_open"></span></a>
-        </div>
-      </div>
-
-      <div class="downloads" id="downloads">
-        <h3><i data-icon="download"></i><span data-i18n="dl_title"></span></h3>
-        <div class="fmt-row">
-          <button type="button" class="fmt" data-fmt="jpg"><b>JPG</b><span>WhatsApp</span></button>
-          <button type="button" class="fmt" data-fmt="png"><b>PNG</b><span>HD</span></button>
-          <button type="button" class="fmt" data-fmt="pdf"><b>PDF</b><span>A5</span></button>
-          <button type="button" class="fmt" data-fmt="story"><b>9:16</b><span data-i18n="dl_story"></span></button>
-          <button type="button" class="fmt" data-fmt="video"><b>MP4</b><span data-i18n="ed_video_tab"></span></button>
-        </div>
-        <p class="note" data-i18n="dl_hint"></p>
-      </div>
     </aside>
 
     <a class="btn jump" href="#side"><i data-icon="eye"></i><span data-i18n="ed_card"></span></a>

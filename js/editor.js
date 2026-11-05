@@ -435,6 +435,27 @@
     }
   });
 
+
+  /* ---------- steps: one part of the form at a time; the preview stays beside it ---------- */
+  const steps = [...document.querySelectorAll("#stepper button")];
+  const groups = [...form.querySelectorAll("[data-step]")];
+  let step = 1;
+  function goStep(n, scroll) {
+    step = Math.min(4, Math.max(1, n));
+    groups.forEach((g) => g.classList.toggle("step-off", Number(g.dataset.step) !== step));
+    steps.forEach((b, i) => {
+      b.classList.toggle("done", i + 1 < step);
+      if (i + 1 === step) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+    $("step-back").hidden = step === 1;
+    $("step-next").hidden = step === 4;
+    if (scroll) form.scrollIntoView({ behavior: FX.reduce ? "auto" : "smooth", block: "start" });
+  }
+  $("stepper").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) goStep(Number(b.dataset.go), true); });
+  $("step-next").addEventListener("click", () => goStep(step + 1, true));
+  $("step-back").addEventListener("click", () => goStep(step - 1, true));
+  goStep(1);
+
   renderSwatches();
   $("qr-show").checked = data.qr !== false;
   renderLoc();
