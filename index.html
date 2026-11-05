@@ -102,7 +102,19 @@
           <p data-i18n="s2_d"></p>
           <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
         </div>
-        <div class="gallery" id="gallery"></div>
+      </div>
+      <div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Designs">
+        <div class="car-track" id="gallery"></div>
+        <div class="car-meta">
+          <button type="button" class="car-btn car-prev" aria-label="Previous design"><i data-icon="arrow"></i></button>
+          <div class="car-info" aria-live="polite">
+            <span class="car-count"></span>
+            <h3 class="car-name"></h3>
+            <a class="btn car-cta" href="create.html"><span data-i18n="cta_create">Create your invite</span><i data-icon="arrow"></i></a>
+          </div>
+          <button type="button" class="car-btn car-next" aria-label="Next design"><i data-icon="arrow"></i></button>
+        </div>
+        <div class="car-progress" aria-hidden="true"><i></i></div>
       </div>
     </section>
 
@@ -176,6 +188,7 @@
   <script src="js/invite.js"></script>
   <script src="js/video.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/carousel.js"></script>
   <script src="js/biodata.js"></script>
   <script>
     hydrateIcons();
@@ -206,6 +219,7 @@
       document.querySelectorAll("#lang-list button").forEach((b) => b.classList.toggle("on", b.dataset.lang === demoLang));
     }
 
+    let car;
     function render() {
       setPageLang(lang);
       applyI18n(lang);
@@ -215,12 +229,12 @@
       document.getElementById("lang-list").innerHTML = Object.entries(LANGS)
         .map(([c, m]) => `<li><button type="button" data-lang="${c}"><span class="native" lang="${c}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</span><span class="code">${c}</span></button></li>`).join("");
       document.getElementById("gallery").innerHTML = Object.entries(TEMPLATES).map(([id, x]) => `
-        <a class="tile" href="create.html?t=${id}&l=${lang}">
+        <a class="tile" href="create.html?t=${id}&l=${lang}" data-name="${x.name}" draggable="false" aria-label="${x.name}">
           <div class="tile-preview"><div data-tpl="${id}"></div></div>
-          <figcaption><span>${x.name}</span><span class="use">${icon("arrow")}</span></figcaption>
         </a>`).join("");
       document.querySelectorAll("[data-tpl]").forEach((el) =>
         renderInvite(el, { ...SAMPLE, t: el.dataset.tpl }, lang, { interactive: false, compact: true }));
+      if (car) car.refresh();
       renderBiodata(document.getElementById("bio-demo"), { ...BIO_SAMPLE, t: "ivory" }, lang);
       renderDemo();
       heroVideo.set({ ...SAMPLE, t: "midnight" }, lang);
@@ -245,6 +259,7 @@
     });
 
     render();
+    car = initCarousel(document.getElementById("carousel"));
     runVideo(heroVideo, document.getElementById("hero-video"));
     runVideo(featVideo, document.getElementById("feature-video"));
     FX.intro([...document.querySelectorAll("[data-intro]")]);

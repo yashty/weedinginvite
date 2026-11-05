@@ -261,17 +261,39 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 .facts span { color: var(--muted); font-size: .95rem; }
 @media (max-width: 860px) { .video-split { grid-template-columns: 1fr; } .video-split .phone { width: min(70%, 280px); } }
 
-.gallery { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px) clamp(12px, 1.6vw, 22px); }
-.tile { position: relative; display: block; text-decoration: none; color: inherit; }
-.tile-preview { height: 300px; border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); padding: 1px; background: var(--foil); transition: transform .45s var(--ease), box-shadow .45s var(--ease); }
-.tile-preview .invite { font-size: 8.4px; height: 100%; border-radius: calc(var(--r) - 1px); }
+/* Design carousel */
+.carousel { --cw: clamp(224px, 24vw, 292px); position: relative; isolation: isolate; margin-top: clamp(-8px, -1vw, 0px); }
+.carousel::before { content: ""; position: absolute; left: 50%; top: 4%; width: min(900px, 120vw); height: 70%; transform: translateX(-50%); z-index: -1; pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 26%, transparent), transparent); filter: blur(10px); animation: glow-drift 9s ease-in-out infinite alternate; }
+@keyframes glow-drift { from { transform: translateX(-54%) scale(.92); opacity: .7; } to { transform: translateX(-46%) scale(1.06); opacity: 1; } }
+.car-track { position: relative; display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); padding: 56px calc(50% - var(--cw) / 2) 96px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; perspective: 1400px; perspective-origin: 50% 40%; cursor: grab; -webkit-user-select: none; user-select: none; }
+.car-track::-webkit-scrollbar { display: none; }
+.car-track.grabbing { cursor: grabbing; }
+.car-track[data-pre] .tile-preview { opacity: 0; }
+.tile { position: relative; flex: 0 0 var(--cw); display: block; text-decoration: none; color: inherit; scroll-snap-align: center; transform-style: preserve-3d; will-change: transform, opacity; outline-offset: 6px; border-radius: var(--r); transition: filter .6s var(--ease); }
+.tile-preview { position: relative; height: calc(var(--cw) * 1.5); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); padding: 1px; background: var(--foil); transition: box-shadow .7s var(--ease); }
+.tile-preview .invite { font-size: calc(var(--cw) / 25); height: 100%; border-radius: calc(var(--r) - 1px); pointer-events: none; }
 .tile-preview .invite-frame { height: 100%; }
-.tile:hover .tile-preview { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.tile figcaption { display: flex; justify-content: space-between; align-items: center; margin-top: .9rem; font: 600 1.15rem/1.2 var(--display-font); }
-.tile .use { color: var(--muted); font-size: .82rem; font-weight: 500; display: inline-flex; align-items: center; gap: .25em; transition: color .2s, gap .3s var(--ease); }
-.tile:hover .use { color: var(--accent); gap: .5em; }
-@media (max-width: 1080px) { .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile-preview { height: 250px; } }
+/* a slow light sweep across the centred card, and again on hover */
+.tile-preview::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .34) 50%, transparent 62%); transform: translateX(-130%); }
+.tile.is-active .tile-preview { box-shadow: var(--shadow-lg), 0 36px 90px -34px var(--glow); }
+.tile.is-active .tile-preview::after { animation: sweep 1.6s var(--ease) .15s 1; }
+.tile.is-active:hover .tile-preview::after { animation: sweep 1.2s var(--ease) 1; }
+@keyframes sweep { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+.car-meta { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(12px, 3vw, 40px); width: min(560px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+.car-info { display: grid; justify-items: center; gap: .5rem; text-align: center; }
+.car-count { font: 600 .74rem/1 var(--royal-font); letter-spacing: .28em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.car-name { font: 500 clamp(1.9rem, 3.4vw, 2.6rem)/1.1 var(--display-font) !important; letter-spacing: -.01em !important; min-height: 1.1em; }
+.car-cta { margin-top: .6rem; }
+.car-btn { display: inline-grid; place-items: center; width: 52px; height: 52px; padding: 0; border-radius: 50%; background: var(--surface); color: var(--accent); border: var(--card-border); border-color: color-mix(in srgb, var(--gold) 45%, transparent); box-shadow: var(--shadow-sm); transition: transform .5s var(--ease), box-shadow .5s var(--ease), border-color .3s var(--ease), opacity .3s; }
+.car-btn .icon { width: 20px; height: 20px; transition: transform .5s var(--ease); }
+.car-prev .icon { transform: scaleX(-1); }
+.car-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 10px 26px -8px var(--glow); }
+.car-next:hover:not(:disabled) .icon { transform: translateX(3px); }
+.car-prev:hover:not(:disabled) .icon { transform: scaleX(-1) translateX(3px); }
+.car-btn:disabled { opacity: .35; cursor: default; }
+.car-progress { position: relative; width: min(320px, 60%); height: 2px; margin: 2.2rem auto 0; border-radius: 2px; background: var(--line); overflow: hidden; }
+.car-progress i { position: absolute; left: 0; top: 0; height: 100%; background: var(--foil); border-radius: inherit; transition: transform .8s var(--ease); }
+@media (max-width: 640px) { .car-btn { width: 46px; height: 46px; } .car-track { padding-block: 40px 80px; } }
 
 .steps { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); counter-reset: s; }
 .steps li { padding: 2.2rem 2rem 2.4rem; position: relative; text-align: center; border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow-sm); border: var(--card-border); }
