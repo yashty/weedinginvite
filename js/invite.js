@@ -120,7 +120,8 @@ function eventName(lang, ev) {
   return ev.k && ev.k !== "custom" ? t(lang, `ev_${ev.k}`) : ev.n || "";
 }
 
-function mapLink(v, a) {
+function mapLink(v, a, ll) {
+  if (typeof locationUrl === "function") return locationUrl(v, a, ll);
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([v, a].filter(Boolean).join(", "))}`;
 }
 
@@ -163,6 +164,7 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
     return `https://wa.me/${(data.p || "").replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
   };
   const orn = ornamentSvg(p.orn);
+  const showQR = !compact && data.qr !== false && !!window.QRCodeStyling && !!(data.ll || data.v || data.a);
 
   el.className = `invite frame-${p.frame}${compact ? " compact" : ""}`;
   el.lang = lang;
@@ -187,7 +189,8 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
       ${data.v ? `<p class="inv-label">${L("inv_venue")}</p>
         <p class="inv-venue">${esc(data.v)}</p>
         ${data.a ? `<p class="inv-address">${esc(data.a)}</p>` : ""}
-        ${interactive ? `<a class="inv-link" target="_blank" rel="noopener" href="${mapLink(data.v, data.a)}">${L("inv_map")}</a>` : ""}` : ""}
+        ${interactive ? `<a class="inv-link" target="_blank" rel="noopener" href="${mapLink(data.v, data.a, data.ll)}">${L("inv_map")}</a>` : ""}` : ""}
+      ${showQR ? `<figure class="inv-qr"><div class="qr-tile" data-qr="${esc(mapLink(data.v, data.a, data.ll))}" data-tpl="${esc(data.t)}" data-style="${esc(data.qs || "rounded")}"></div><figcaption>${L("qr_scan")}</figcaption></figure>` : ""}
       ${data.m && !compact ? `<p class="inv-message">“${esc(data.m)}”</p>` : ""}
       ${data.d && interactive ? `<div class="countdown" data-date="${esc(data.d)}T${esc(data.tm || "00:00")}">
         <div><b data-cd="d">0</b><span>${L("inv_days")}</span></div>
@@ -200,6 +203,7 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
             <strong>${esc(eventName(lang, ev))}</strong>
             <span>${[fmtDate(lang, ev.d), fmtTime(lang, ev.tm)].filter(Boolean).map((x) => `<bdi>${esc(x)}</bdi>`).join(" · ")}</span>
             ${ev.v ? `<span>${esc(ev.v)}</span>` : ""}
+            ${interactive && Array.isArray(ev.ll) ? `<a class="inv-link" target="_blank" rel="noopener" href="${mapLink(ev.v, "", ev.ll)}">${L("inv_map")}</a>` : ""}
           </li>`).join("")}
         </ul>` : ""}
       ${data.p && interactive ? `<h2 class="inv-section">${L("inv_rsvp")}</h2>
@@ -210,6 +214,7 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
       ${compact ? "" : orn}
     </div>`;
   startCountdown(el);
+  if (showQR) hydrateQR(el);
 }
 
 function startCountdown(el) {

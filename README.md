@@ -21,6 +21,12 @@ Live: https://yashty.github.io/weedinginvite/
   - A version's link holds only that version's ceremonies, so guests can't find the ones left out.
   - Ceremonies added later are included in every version until you untick them.
   - Versions are saved with the draft in the browser.
+- **Location and QR code:**
+  - **Pick on map** opens an OpenStreetMap picker. You can search for the venue, tap the map, drag the pin, or use **Use my location**.
+  - Picking a place fills in the venue and address if they're empty. Each ceremony can have its own pin too.
+  - The invitation shows a **QR code** that opens the exact pin in Google Maps. Without a pin, it searches for the venue text.
+  - Six QR styles (Rounded, Classic, Dots, Classy, Gradient, Emblem), coloured to match the design. Dark dots always sit on a light tile so phones scan them reliably.
+  - The QR appears on the card, guest page, video, story image, JPG/PNG/PDF, and as its own PNG or SVG download.
 - **Downloads:**
   - **JPG** (for WhatsApp) and **PNG** (HD) image of the card
   - **PDF**, A5 width, ready for printing
@@ -61,6 +67,8 @@ The UI was then checked against the [UI/UX Pro Max](https://github.com/nextlevel
 
 Card images are captured with [html-to-image](https://github.com/bubkoo/html-to-image) 1.11.13 (MIT, included as `js/vendor/html-to-image.js`). The PDF is written directly by `js/export.js` (one page with the card as a JPEG), so no PDF library is needed.
 
+Maps use [Leaflet](https://leafletjs.com) 1.9.4 (BSD-2, included in `js/vendor/leaflet/`, loaded only when the picker opens) with OpenStreetMap tiles and [Nominatim](https://nominatim.org) search. Searches run only when you submit, never per keystroke, in line with Nominatim's usage policy; heavy traffic would need a self-hosted or paid geocoder. QR codes use [qr-code-styling](https://github.com/oblakstudio/qr-code-styling) 1.9.2 (MIT, `js/vendor/qr-code-styling.js`).
+
 Animation uses [Motion](https://motion.dev) 14.9.1, included in the repo as `js/vendor/motion.js` (MIT licence in `js/vendor/MOTION-LICENSE.md`). Everything still works without it. When the device asks for reduced motion, the page shows its final state without animating.
 
 ## Files
@@ -75,6 +83,8 @@ Animation uses [Motion](https://motion.dev) 14.9.1, included in the repo as `js/
 | `js/i18n.js` | Languages and all translations |
 | `js/ui.js` | Icons and Motion helpers |
 | `js/export.js` | PNG, JPG, PDF and story-image downloads |
+| `js/qr.js` | Location links and styled QR codes |
+| `js/map.js` | Map location picker |
 
 ## Run locally
 

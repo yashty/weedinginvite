@@ -103,6 +103,9 @@ class InviteVideo {
     this.family = fams.map((f) => `"${f}"`).join(", ") + ", serif";
     this.nameFamily = [this.p.names || this.p.latin, ...fams].map((f) => `"${f}"`).join(", ") + ", serif";
     this.nameWeight = this.p.names ? 400 : 700;
+    const qrUrl = data.qr !== false && typeof locationUrl === "function" ? locationUrl(data.v, data.a, data.ll) : "";
+    const qrKey = `${qrUrl}|${data.t}|${data.qs}`;
+    if (qrKey !== this.qrKey) { this.qrKey = qrKey; this.qrUrl = qrUrl; this.qrImg = null; }
     this.events = (data.e || []).filter((ev) => eventName(this.lang, ev)).slice(0, 5);
     const sc = [{ id: "open", dur: 3.4 }, { id: "names", dur: 4.4 }];
     if (data.d || data.v) sc.push({ id: "when", dur: 4.6 });
@@ -123,6 +126,9 @@ class InviteVideo {
     const sample = [this.data.b, this.data.g, t(this.lang, "inv_invite")].join(" ");
     const fams = (this.lang === "en" ? [this.p.latin] : [LANGS[this.lang].font, this.p.latin]).concat(this.p.names ? [this.p.names] : []);
     loadFont(this.lang);
+    if (this.qrUrl && !this.qrImg && typeof qrBitmap === "function") {
+      try { this.qrImg = await qrBitmap(this.qrUrl, this.data.t, this.data.qs); } catch (_) { this.qrImg = null; }
+    }
     await Promise.all(fams.flatMap((f) => ["400", "700"].map((w) => document.fonts.load(`${w} 40px "${f}"`, sample).catch(() => null))));
   }
 
@@ -364,14 +370,27 @@ class InviteVideo {
     }
 
     if (sc.id === "close") {
-      let y = cy - 240;
+      let y = this.qrImg ? cy - 360 : cy - 240;
       y += this.text(T("inv_save"), y, { size: 28, color: p.accent, k: k(0.1) }) + 50;
       y += this.text(`${data.b || ""} ${T("inv_and")} ${data.g || ""}`, y, { size: 72, weight: 700, color: p.accent, k: k(0.3, 1.1), maxW: VIDEO_W - 140, names: true });
       this.ornament(y + 10, 1.5, k(0.7, 1.2));
       y += 100;
       y += this.text(fmtDate(lang, data.d), y, { size: 36, k: k(1.0) }) + 30;
-      if (data.m) this.text(`“${data.m}”`, y, { size: 30, italic: true, color: p.soft, k: k(1.4), maxW: VIDEO_W - 200 });
-      else if (data.v) this.text(data.v, y, { size: 30, color: p.soft, k: k(1.4) });
+      if (data.m) y += this.text(`“${data.m}”`, y, { size: 30, italic: true, color: p.soft, k: k(1.4), maxW: VIDEO_W - 200 });
+      else if (data.v) y += this.text(data.v, y, { size: 30, color: p.soft, k: k(1.4) });
+      if (this.qrImg) {
+        const e = ease(k(1.7, 1));
+        const size = 230;
+        const top = Math.min(y + 40, VIDEO_H - 110 - size);
+        const x = (VIDEO_W - size) / 2;
+        ctx.save();
+        ctx.globalAlpha = e;
+        ctx.fillStyle = qrColors(data.t).tile;
+        ctx.beginPath(); ctx.roundRect(x - 14, top - 14 + (1 - e) * 20, size + 28, size + 28, 22); ctx.fill();
+        ctx.drawImage(this.qrImg, x, top + (1 - e) * 20, size, size);
+        ctx.restore();
+        this.text(T("qr_scan"), top + size + 48, { size: 26, color: p.soft, k: k(1.9) });
+      }
     }
   }
 

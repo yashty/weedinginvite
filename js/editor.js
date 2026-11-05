@@ -71,7 +71,10 @@
       <select data-f="k" aria-label="${esc(t(uiLang, "ed_event_name"))}">${opts}</select>
       <input type="date" data-f="d" value="${esc(ev.d)}" aria-label="${esc(t(uiLang, "ed_date"))}">
       <input type="time" data-f="tm" value="${esc(ev.tm)}" aria-label="${esc(t(uiLang, "ed_time"))}">
-      <button type="button" class="link-btn" data-remove="${i}" aria-label="${esc(t(uiLang, "ed_remove"))}">${icon("trash")}</button>
+      <div class="row-actions">
+        <button type="button" class="link-btn pin${Array.isArray(ev.ll) ? " on" : ""}" data-pin="${i}" aria-label="${esc(t(uiLang, "loc_pick"))}" aria-pressed="${Array.isArray(ev.ll)}">${icon("pin")}</button>
+        <button type="button" class="link-btn" data-remove="${i}" aria-label="${esc(t(uiLang, "ed_remove"))}">${icon("trash")}</button>
+      </div>
       ${ev.k === "custom" ? `<input class="wide" data-f="n" value="${esc(ev.n)}" placeholder="${esc(t(uiLang, "ed_event_name"))}">` : ""}
       <input class="wide" data-f="v" value="${esc(ev.v)}" placeholder="${esc(t(uiLang, "ed_venue"))}">
     </div>`;
@@ -135,6 +138,60 @@
     langSelect.value = data.l;
   }
 
+  /* ---------- location pin ---------- */
+  if (data.qr === undefined) data.qr = true;
+  if (!QR_STYLES[data.qs]) data.qs = "rounded";
+
+  function renderLoc() {
+    const on = Array.isArray(data.ll);
+    $("loc-status").hidden = !on;
+    if (on) {
+      $("loc-coords").textContent = `${data.ll[0].toFixed(5)}, ${data.ll[1].toFixed(5)}`;
+      $("loc-coords").href = locationUrl("", "", data.ll);
+    }
+  }
+  $("pick-loc").addEventListener("click", () => openMapPicker({
+    lang: data.l, ui: uiLang, initial: data.ll || null, query: [data.v, data.a].filter(Boolean).join(", "),
+    onPick: (r) => {
+      data.ll = r.ll;
+      if (!data.v && r.name) data.v = r.name;
+      if (!data.a && r.address) data.a = r.address;
+      fillForm(); renderLoc(); update();
+    },
+  }));
+  $("unpin").addEventListener("click", () => {
+    const old = data.ll;
+    delete data.ll;
+    renderLoc(); update();
+    toast(t(uiLang, "toast_removed"), { action: t(uiLang, "toast_undo"), onAction: () => { data.ll = old; renderLoc(); update(); } });
+  });
+
+  /* ---------- QR code ---------- */
+  let qrTplShown = null;
+  const qrUrl = () => locationUrl(data.v, data.a, data.ll) || "https://www.openstreetmap.org";
+  function renderQrStyles() {
+    qrTplShown = data.t;
+    const box = $("qr-styles");
+    box.innerHTML = Object.entries(QR_STYLES).map(([id, st]) => `
+      <button type="button" class="qr-style" data-qs="${id}" aria-pressed="${id === data.qs}"><span class="qr-mini"></span><span>${st.name}</span></button>`).join("");
+    if (!window.QRCodeStyling) return;
+    // Previews encode a short sample so each style's shapes are visible at thumbnail size.
+    box.querySelectorAll(".qr-style").forEach((b) => makeQR("https://osm.org", data.t, b.dataset.qs, 128, "svg").append(b.querySelector(".qr-mini")));
+  }
+  $("qr-styles").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-qs]");
+    if (!b) return;
+    data.qs = b.dataset.qs;
+    $("qr-styles").querySelectorAll(".qr-style").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    update();
+  });
+  $("qr-show").addEventListener("input", (e) => { data.qr = e.target.checked; });
+  $("qr-dl").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-qrfmt]");
+    if (!b || !window.QRCodeStyling) return;
+    makeQR(qrUrl(), data.t, data.qs, 1024, "svg").download({ name: exportName(data, "x").slice(0, -2) + "-location-qr", extension: b.dataset.qrfmt });
+  });
+
   /* ---------- previews ---------- */
   const video = new InviteVideo($("video-canvas"), data, data.l);
   let view = location.hash === "#video" ? "video" : "card";
@@ -162,6 +219,7 @@
     $("open").href = url;
     $("wa").href = waFor(version());
     refreshVersionBits();
+    if (qrTplShown !== data.t) renderQrStyles();
     refreshVideo();
   }
 
@@ -210,6 +268,15 @@
   });
 
   eventsBox.addEventListener("click", (e) => {
+    const pin = e.target.closest("[data-pin]");
+    if (pin) {
+      const ev = data.e[Number(pin.dataset.pin)];
+      openMapPicker({
+        lang: data.l, ui: uiLang, initial: ev.ll || null, query: ev.v || [data.v, data.a].filter(Boolean).join(", "),
+        onPick: (r) => { ev.ll = r.ll; if (!ev.v && r.name) ev.v = r.name; renderEvents(); update(); },
+      });
+      return;
+    }
     const b = e.target.closest("[data-remove]");
     if (!b) return;
     const at = Number(b.dataset.remove);
@@ -361,6 +428,8 @@
   });
 
   renderSwatches();
+  $("qr-show").checked = data.qr !== false;
+  renderLoc();
   fillForm();
   applyUi();
   update();

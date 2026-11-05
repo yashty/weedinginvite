@@ -42,6 +42,14 @@
           <label class="field"><span data-i18n="ed_venue"></span><input name="v" maxlength="120"></label>
           <label class="field"><span data-i18n="ed_address"></span><input name="a" maxlength="200"></label>
         </div>
+        <div class="loc-row">
+          <button type="button" class="btn ghost small" id="pick-loc"><i data-icon="pin"></i><span data-i18n="loc_pick"></span></button>
+          <span class="loc-status" id="loc-status" hidden>
+            <i class="loc-dot"></i><span data-i18n="loc_pinned"></span>
+            <a class="loc-coords" id="loc-coords" target="_blank" rel="noopener"></a>
+            <button type="button" class="link-btn" id="unpin" data-i18n="loc_remove"></button>
+          </span>
+        </div>
         <label class="field"><span data-i18n="ed_message"></span><textarea name="m" rows="2" maxlength="300"></textarea></label>
         <label class="field"><span data-i18n="ed_phone"></span><input name="p" type="tel" inputmode="tel" autocomplete="tel" placeholder="919876543210" maxlength="16" aria-describedby="p-err"><span class="field-error" id="p-err" data-i18n="err_phone" hidden></span></label>
       </section>
@@ -64,6 +72,18 @@
       <section class="group">
         <h2 data-i18n="ed_template"></h2>
         <div class="swatches" id="swatches" role="group"></div>
+      </section>
+
+      <section class="group" id="qr-group">
+        <h2 data-i18n="qr_title"></h2>
+        <label class="toggle"><span><i data-icon="qr"></i><span data-i18n="qr_show"></span></span><input type="checkbox" id="qr-show" checked></label>
+        <div class="field"><span data-i18n="qr_style"></span>
+          <div class="qr-styles" id="qr-styles" role="group"></div>
+        </div>
+        <div class="fmt-row qr-dl" id="qr-dl">
+          <button type="button" class="fmt" data-qrfmt="png"><b>PNG</b><span>QR</span></button>
+          <button type="button" class="fmt" data-qrfmt="svg"><b>SVG</b><span>QR</span></button>
+        </div>
       </section>
 
       <section class="group">
@@ -127,7 +147,10 @@
   <script src="js/i18n.js"></script>
   <script src="js/invite.js"></script>
   <script src="js/video.js"></script>
+  <script src="js/vendor/qr-code-styling.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/qr.js"></script>
+  <script src="js/map.js"></script>
   <script src="js/export.js"></script>
   <script src="js/editor.js"></script>
 </body>
