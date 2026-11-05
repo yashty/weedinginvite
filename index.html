@@ -220,6 +220,12 @@
         const on = b.dataset.lang === demoLang;
         b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
       });
+      const list = document.getElementById("lang-list"), cur = list.querySelector("button.on");
+      if (cur && list.scrollWidth > list.clientWidth) {
+        const lr = list.getBoundingClientRect(), br = cur.getBoundingClientRect();
+        list.scrollTo({ left: list.scrollLeft + br.left - lr.left - (lr.width - br.width) / 2, behavior: list.dataset.ready ? "smooth" : "auto" });
+      }
+      list.dataset.ready = "1";
       const badge = document.getElementById("demo-badge");
       badge.textContent = LANGS[demoLang].name; badge.lang = demoLang; badge.style.fontFamily = `'${LANGS[demoLang].font}', var(--ui-font)`;
     }
