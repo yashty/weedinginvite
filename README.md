@@ -46,7 +46,7 @@ Live: https://yashty.github.io/weedinginvite/
 
 The visual theme is warm and ceremonial:
 
-- **Palette:** ivory paper (`#fbf7f0`), deep maroon ink and accent (`#3b1520`, `#7d1f35`), muted gold foil (`#b38a4c` plus a foil gradient), and blush and sage pastels for the hero wash. In dark mode it becomes a plum night with gold accents.
+- **Palette:** two themes sharing one set of CSS variables (`:root` in `css/style.css`). Light is ethereal ivory: alabaster `#FBF9F5`, white cards with a `rgba(197,168,128,.15)` hairline, espresso ink `#1A1816`, warm taupe `#7A736D`, champagne gold `#C5A880` and soft rose `#EAD5D0`. Mid-dark is rich espresso: `#161412`, charcoal cards `#262320`, alabaster text, stone `#A8A29E`, antique gold `#D4AF37` and rose-gold highlights. It follows the OS setting and has a toggle in the top bar (saved in `localStorage`, applied by `js/theme.js` before first paint). `--gold` is for fills and hairlines; `--accent` is the text-safe variant.
 - **Type:** Cormorant Garamond for headlines, Cinzel for small royal labels (eyebrows, card labels, section titles), and Plus Jakarta Sans for body text and form fields.
 - **Cards:** invitation and biodata cards have a foil gradient border taken from each design's accent colour, soft rounded corners and layered shadows. Ceremony and biodata panels each carry a small foil tab.
 - **Decorative touches:** gold-line floral sprigs in the hero and closing sections, foil hairline dividers with a lotus flourish, and a gentle shimmer that sweeps across buttons and RSVP buttons on hover (turned off when reduced motion is requested).
