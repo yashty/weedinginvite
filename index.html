@@ -82,10 +82,15 @@
       </div>
     </section>
 
-    <section id="video" class="section">
+    <section id="video" class="section video-sec">
       <div class="wrap video-split">
-        <div class="phone"><canvas id="feature-video" aria-label="Video invitation preview"></canvas></div>
-        <div>
+        <div class="video-stage">
+          <span class="vs-ring r1" aria-hidden="true"></span><span class="vs-ring r2" aria-hidden="true"></span>
+          <div class="phone"><canvas id="feature-video" aria-label="Video invitation preview"></canvas></div>
+          <span class="vs-chip vs-a" aria-hidden="true"><i data-icon="music"></i><span class="eq"><b></b><b></b><b></b><b></b></span></span>
+          <span class="vs-chip vs-b" aria-hidden="true"><i data-icon="phone"></i>9:16 · MP4</span>
+        </div>
+        <div class="video-copy">
           <div class="section-head">
             <p class="eyebrow" data-i18n="eyebrow_video"></p>
             <h2 data-i18n="video_title"></h2>
@@ -93,9 +98,9 @@
             <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
           </div>
           <ul class="facts">
-            <li><i data-icon="music"></i><div><strong data-i18n="ed_music"></strong></div></li>
-            <li><i data-icon="globe"></i><div><strong data-i18n="nav_lang"></strong></div></li>
-            <li><i data-icon="phone"></i><div><strong>9:16 · MP4 / WebM</strong></div></li>
+            <li><span class="fn">01</span><i data-icon="music"></i><strong data-i18n="ed_music"></strong></li>
+            <li><span class="fn">02</span><i data-icon="globe"></i><strong data-i18n="nav_lang"></strong></li>
+            <li><span class="fn">03</span><i data-icon="phone"></i><strong>9:16 · MP4 / WebM</strong></li>
           </ul>
           <a class="btn" href="create.html#video"><i data-icon="video"></i><span data-i18n="ed_video">Create video</span></a>
         </div>
