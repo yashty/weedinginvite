@@ -60,16 +60,17 @@
     <section id="languages" class="section band">
       <div class="wrap">
         <div class="lang-demo">
-          <div>
+          <div class="lang-copy">
             <div class="section-head">
               <p class="eyebrow" data-i18n="eyebrow_lang"></p>
               <h2 data-i18n="lang_title"></h2>
               <p data-i18n="lang_desc"></p>
               <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
             </div>
-            <ul class="lang-list" id="lang-list"></ul>
+            <div class="lang-hero" aria-hidden="true"><span class="lh-name" id="lh-name"></span><span class="lh-count" id="lh-count"></span></div>
           </div>
-          <div class="demo-card"><span class="demo-badge" id="demo-badge" aria-hidden="true"></span><div id="demo-card"></div></div>
+          <div class="demo-card"><div id="demo-card"></div></div>
+          <div class="lang-marquee" id="lang-list" role="group" aria-label="Languages"></div>
         </div>
       </div>
     </section>
@@ -219,14 +220,10 @@
         const on = b.dataset.lang === demoLang;
         b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
       });
-      const list = document.getElementById("lang-list"), cur = list.querySelector("button.on");
-      if (cur && list.scrollWidth > list.clientWidth) {
-        const lr = list.getBoundingClientRect(), br = cur.getBoundingClientRect();
-        list.scrollTo({ left: list.scrollLeft + br.left - lr.left - (lr.width - br.width) / 2, behavior: list.dataset.ready ? "smooth" : "auto" });
-      }
-      list.dataset.ready = "1";
-      const badge = document.getElementById("demo-badge");
-      badge.textContent = LANGS[demoLang].name; badge.lang = demoLang; badge.style.fontFamily = `'${LANGS[demoLang].font}', var(--ui-font)`;
+      const L = LANGS[demoLang], nameEl = document.getElementById("lh-name");
+      nameEl.textContent = L.name; nameEl.lang = demoLang; nameEl.style.fontFamily = `'${L.font}', var(--ui-font)`;
+      document.getElementById("lh-count").textContent = `${String(Object.keys(LANGS).indexOf(demoLang) + 1).padStart(2, "0")} / ${String(Object.keys(LANGS).length).padStart(2, "0")}`;
+      if (FX.on) window.Motion.animate(nameEl, { opacity: [0, 1], y: [24, 0], filter: ["blur(10px)", "blur(0px)"] }, { duration: 0.8, ease: [0.16, 1, 0.3, 1] });
     }
 
     let car;
@@ -236,8 +233,10 @@
       renderInvite(document.getElementById("hero-card"), { ...SAMPLE, t: "royal" }, lang, { interactive: false, compact: true });
       document.getElementById("hero-langs").innerHTML = Object.entries(LANGS)
         .map(([c, m]) => `<button type="button" lang="${c}" data-lang="${c}" class="${c === lang ? "on" : ""}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</button>`).join("");
-      document.getElementById("lang-list").innerHTML = Object.entries(LANGS)
-        .map(([c, m]) => `<li><button type="button" data-lang="${c}"><span class="native" lang="${c}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</span><span class="code">${c}</span></button></li>`).join("");
+      const entries = Object.entries(LANGS);
+      const pill = ([c, m], dup) => `<button type="button" data-lang="${c}"${dup ? ' aria-hidden="true" tabindex="-1"' : ""}><span class="native" lang="${c}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</span><span class="code">${c}</span></button>`;
+      const row = (arr, rev) => `<div class="m-row${rev ? " rev" : ""}"><div class="m-track">${arr.map((e) => pill(e)).join("")}${arr.map((e) => pill(e, true)).join("")}</div></div>`;
+      document.getElementById("lang-list").innerHTML = row(entries) + row(entries.slice(6).concat(entries.slice(0, 6)), true);
       document.getElementById("gallery").innerHTML = Object.entries(TEMPLATES).map(([id, x]) => `
         <a class="tile" href="create.html?t=${id}&l=${lang}" data-name="${x.name}" draggable="false" aria-label="${x.name}">
           <div class="tile-preview"><div data-tpl="${id}"></div></div>
@@ -270,15 +269,17 @@
 
     render();
     car = initCarousel(document.getElementById("carousel"));
-    /* Language tiles: rise in one after another the first time they are seen. */
+    /* Language marquee: rows fade up the first time they are seen; a touch pauses the drift for a moment. */
     const langList = document.getElementById("lang-list");
+    let pauseT;
+    langList.addEventListener("pointerdown", () => { langList.classList.add("paused"); clearTimeout(pauseT); pauseT = setTimeout(() => langList.classList.remove("paused"), 3500); });
     if (FX.on) {
       langList.dataset.pre = "";
       whenVisible(langList, () => {
         if (!("pre" in langList.dataset)) return;
         delete langList.dataset.pre;
-        window.Motion.animate(langList.children, { opacity: [0, 1], y: [28, 0], filter: ["blur(8px)", "blur(0px)"] },
-          { duration: 0.9, delay: window.Motion.stagger(0.05), ease: [0.16, 1, 0.3, 1] });
+        window.Motion.animate(langList.children, { opacity: [0, 1], y: [24, 0], filter: ["blur(8px)", "blur(0px)"] },
+          { duration: 0.9, delay: window.Motion.stagger(0.12), ease: [0.16, 1, 0.3, 1] });
       }, () => {});
     }
     runVideo(heroVideo, document.getElementById("hero-video"));
