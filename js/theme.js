@@ -1,12 +1,11 @@
 /* Light / mid-dark theme. Loaded in <head> so the saved choice is applied before first paint.
- * Resolves to an explicit data-theme ("light" | "dark") on <html>; follows the OS until the visitor picks one. */
+ * Light is the default; dark applies only after the visitor chooses it with the toggle. */
 (() => {
   const root = document.documentElement;
   const KEY = "sn-theme";
-  const mq = matchMedia("(prefers-color-scheme: dark)");
   const COLORS = { light: "#FBF9F5", dark: "#161412" };
   const read = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
-  const resolve = () => read() || (mq.matches ? "dark" : "light");
+  const resolve = () => read() === "dark" ? "dark" : "light";
 
   function apply(theme) {
     root.dataset.theme = theme;
@@ -18,7 +17,6 @@
   }
 
   apply(resolve());
-  mq.addEventListener("change", () => { if (!read()) apply(resolve()); });
 
   document.addEventListener("DOMContentLoaded", () => {
     apply(root.dataset.theme);
