@@ -18,13 +18,17 @@
     <div class="wrap">
       <a class="brand" href="index.html"><i data-icon="mark"></i><span>Shubh Nimantran</span></a>
       <nav>
-        <a href="#languages" data-i18n="nav_lang">Languages</a>
-        <a href="#video" data-i18n="nav_video">Video invites</a>
-        <a href="#designs" data-i18n="nav_templates">Designs</a>
-        <a href="biodata.html" data-i18n="nav_biodata">Biodata</a>
+        <div class="nav-links" id="nav-links">
+          <a href="#languages" data-i18n="nav_lang">Languages</a>
+          <a href="#video" data-i18n="nav_video">Video invites</a>
+          <a href="#designs" data-i18n="nav_templates">Designs</a>
+          <a href="biodata.html" data-i18n="nav_biodata">Biodata</a>
+          <a class="btn menu-cta" href="create.html" data-i18n="nav_create">Create invite</a>
+        </div>
         <select id="ui-lang" class="lang-select" aria-label="Language"></select>
         <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Dark mode" title="Light / dark"><i data-icon="sun"></i><i data-icon="moon"></i></button>
         <a class="btn small" href="create.html" data-i18n="nav_create">Create invite</a>
+        <button type="button" class="burger" id="burger" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span><span></span></button>
       </nav>
     </div>
   </header>

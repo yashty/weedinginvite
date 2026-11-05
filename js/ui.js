@@ -133,3 +133,15 @@ function toast(msg, { action, onAction, ms = 5000 } = {}) {
   timer = setTimeout(close, ms);
   return close;
 }
+
+/* Phone menu: the burger toggles .open on the top bar. */
+document.addEventListener("DOMContentLoaded", () => {
+  const bar = document.querySelector(".topbar"), btn = document.getElementById("burger");
+  if (!bar || !btn) return;
+  const set = (open) => { bar.classList.toggle("open", open); btn.setAttribute("aria-expanded", String(open)); };
+  btn.addEventListener("click", () => set(!bar.classList.contains("open")));
+  bar.querySelectorAll(".nav-links a").forEach((a) => a.addEventListener("click", () => set(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && bar.classList.contains("open")) { set(false); btn.focus(); } });
+  document.addEventListener("click", (e) => { if (!bar.contains(e.target)) set(false); });
+  matchMedia("(min-width: 961px)").addEventListener("change", (e) => { if (e.matches) set(false); });
+});
