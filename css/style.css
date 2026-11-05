@@ -298,13 +298,14 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
   .lang-copy .section-head { order: 1; margin-bottom: 0; }
   .lang-hero { order: 2; }
   .lang-marquee { order: 3; }
-  .demo-card { order: 4; max-width: 440px; width: 100%; --fs: 14px; }
+  .demo-card { order: 4; --fs: 11px; max-width: 100%; margin-inline: auto; }
   .lh-name { font-size: clamp(3.6rem, 17vw, 6rem); }
 }
 @media (max-width: 560px) {
   .m-track button { padding: .7rem 1.2rem .65rem; }
   .m-track .native { font-size: 1.25rem; }
   .demo-card::before { transform: translate(10px, 12px) rotate(2deg); }
+  .demo-card { --fs: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .m-track { animation: none !important; } .m-row { overflow-x: auto; scrollbar-width: none; } }
 
