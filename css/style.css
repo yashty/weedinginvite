@@ -522,7 +522,7 @@ html:not([lang="en"]) .editor .group > h2 { font-family: var(--script-font), var
 .seg button { border: 0; background: none; padding: .5em 1.2em; border-radius: 999px; font: 600 .85rem/1 var(--ui-font); color: var(--muted); cursor: pointer; display: inline-flex; gap: .4em; align-items: center; }
 html:not([lang="en"]) .seg button { font-family: var(--script-font), var(--ui-font); }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
-.preview { max-height: max(340px, calc(100svh - 520px)); overflow: auto; border-radius: 18px; scrollbar-width: none; }
+.preview { max-height: max(340px, calc(100svh - 200px)); overflow: auto; border-radius: 18px; scrollbar-width: none; }
 .preview .invite { box-shadow: var(--shadow); }
 .bio-side .preview { max-height: max(420px, calc(100svh - 360px)); }
 .video-box { display: grid; gap: 1rem; justify-items: center; }
@@ -562,6 +562,30 @@ html[lang="en"] :is(.downloads, .guest-dl) h3 { font-family: var(--ui-font) !imp
   .side { position: static; max-height: none; overflow: visible; }
   .preview, .bio-side .preview { max-height: none; }
   .jump { display: inline-flex; position: fixed; right: 16px; bottom: 16px; z-index: 30; box-shadow: var(--shadow-lg); }
+}
+
+/* Editor steps */
+.editor-sub { margin: -.4rem 0 .2rem; color: var(--muted); max-width: 40rem; }
+.stepper { position: sticky; top: 64px; z-index: 20; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; padding: .6rem; margin-inline: -.2rem; border-radius: 999px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border: 1px solid var(--line); }
+.stepper button { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; padding: .55rem .7rem; border: 0; border-radius: 999px; background: none; color: var(--muted); font: 600 .86rem/1.1 var(--ui-font); cursor: pointer; transition: background-color .3s var(--ease), color .3s var(--ease); }
+html:not([lang="en"]) .stepper button { font-family: var(--script-font), var(--ui-font); }
+.stepper b { display: inline-grid; place-items: center; flex: none; width: 1.7rem; height: 1.7rem; border-radius: 50%; border: 1px solid var(--line); font: 600 .8rem/1 var(--ui-font); background: var(--surface); }
+.stepper button:hover { color: var(--ink); }
+.stepper button[aria-current="step"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+.stepper button[aria-current="step"] b { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stepper button.done b { background: color-mix(in srgb, var(--gold) 28%, var(--surface)); border-color: var(--gold); color: var(--accent); }
+.step-off { display: none !important; }
+.step-nav { display: flex; justify-content: space-between; gap: 1rem; }
+.step-nav [hidden] { display: none; }
+.step-nav #step-next { margin-inline-start: auto; }
+.step-nav #step-back .icon { transform: scaleX(-1); }
+#share-group .share, #share-group .downloads { box-shadow: none; background: var(--surface-2); }
+@media (max-width: 640px) {
+  .stepper { top: 58px; gap: .2rem; padding: .4rem; }
+  .stepper button { padding: .4rem; font-size: .78rem; }
+  .stepper button:not([aria-current="step"]) span { display: none; }
+  .stepper button[aria-current="step"] { grid-column: span 1; }
+  .stepper { grid-template-columns: auto auto auto auto; justify-content: space-between; }
 }
 
 /* ---------- guest page ---------- */
