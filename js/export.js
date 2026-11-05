@@ -45,7 +45,7 @@ async function embeddedFontCss(families, text) {
   };
   const out = [];
   for (const fam of families) {
-    const spec = fam === "Manrope" ? "Manrope:wght@400;500;600" : fontSpec(fam);
+    const spec = fontSpec(fam);
     let css;
     try { css = await (await fetch(`https://fonts.googleapis.com/css2?family=${spec.replace(/ /g, "+")}&display=swap`)).text(); } catch (_) { continue; }
     for (const face of css.match(/@font-face\s*{[^}]*}/g) || []) {
@@ -59,8 +59,11 @@ async function embeddedFontCss(families, text) {
   return out.join("\n");
 }
 
-/* Render the print version of the card and capture it to a canvas. */
-async function cardCanvas(data, lang, pixelRatio = 2) {
+/* Fonts the site's own UI layer contributes to cards (labels, captions). */
+const CARD_UI_FONTS = ["Plus Jakarta Sans", "Cinzel"];
+
+/* Render a node off-screen with render(el), then capture it to a canvas with its fonts embedded. */
+async function captureCanvas(render, { families, bg, pixelRatio = 2 }) {
   if (!window.htmlToImage) throw new Error("html-to-image missing");
   const host = document.createElement("div");
   host.setAttribute("aria-hidden", "true");
@@ -69,20 +72,37 @@ async function cardCanvas(data, lang, pixelRatio = 2) {
   host.appendChild(card);
   document.body.appendChild(host);
   try {
-    loadFont(lang);
-    renderInvite(card, data, lang, { interactive: false });
+    render(card);
     card.style.borderRadius = "0";
-    const fams = [LANGS[lang].font, tpl(data.t).latin, tpl(data.t).names].filter(Boolean);
+    const fams = [...new Set([...families, ...CARD_UI_FONTS].filter(Boolean))];
     await Promise.all(fams.flatMap((f) => ["400", "600", "700"].map((w) => document.fonts.load(`${f === "Great Vibes" ? "400" : w} 20px "${f}"`, card.textContent.slice(0, 200)).catch(() => null))));
+    await Promise.all([...card.querySelectorAll("img")].map((img) => (img.complete ? null : new Promise((r) => { img.onload = img.onerror = r; }))));
     await document.fonts.ready;
-    const families = [...new Set([LANGS[lang].font, tpl(data.t).latin, tpl(data.t).names, "Manrope"].filter(Boolean))];
-    const fontEmbedCSS = await embeddedFontCss(families, card.textContent + "0123456789:·“”");
-    const opts = { pixelRatio, skipAutoScale: true, backgroundColor: tpl(data.t).bg, fontEmbedCSS };
+    const fontEmbedCSS = await embeddedFontCss(fams, card.textContent + "0123456789:·“”");
+    const opts = { pixelRatio, skipAutoScale: true, backgroundColor: bg, fontEmbedCSS };
     // Safari sometimes paints web fonts only on the second pass.
     await htmlToImage.toCanvas(card, { ...opts, pixelRatio: 1 }).catch(() => null);
     return await htmlToImage.toCanvas(card, opts);
   } finally {
     host.remove();
+  }
+}
+
+/* Render the print version of the card and capture it to a canvas. */
+function cardCanvas(data, lang, pixelRatio = 2) {
+  loadFont(lang);
+  const p = tpl(data.t);
+  return captureCanvas((el) => renderInvite(el, data, lang, { interactive: false }),
+    { families: [LANGS[lang].font, p.latin, p.names], bg: p.bg, pixelRatio });
+}
+
+/* Save a captured canvas as JPG, PNG or a one-page PDF. */
+async function saveCanvas(c, fmt, name, title = "") {
+  if (fmt === "png") saveBlob(await canvasBlob(c, "image/png"), `${name}.png`);
+  else if (fmt === "jpg") saveBlob(await canvasBlob(c, "image/jpeg", 0.9), `${name}.jpg`);
+  else if (fmt === "pdf") {
+    const jpeg = new Uint8Array(await (await canvasBlob(c, "image/jpeg", 0.92)).arrayBuffer());
+    saveBlob(pdfFromJpeg(jpeg, c.width, c.height, title), `${name}.pdf`);
   }
 }
 
@@ -140,16 +160,9 @@ function pdfFromJpeg(jpeg, imgW, imgH, title = "") {
 /* Run one export by format id. */
 async function exportInvite(fmt, data, lang, label = "") {
   const title = `${data.b || ""} & ${data.g || ""}`;
-  if (fmt === "png") {
-    const c = await cardCanvas(data, lang, 3);
-    saveBlob(await canvasBlob(c, "image/png"), exportName(data, "png", label));
-  } else if (fmt === "jpg") {
-    const c = await cardCanvas(data, lang, 2);
-    saveBlob(await canvasBlob(c, "image/jpeg", 0.9), exportName(data, "jpg", label));
-  } else if (fmt === "pdf") {
-    const c = await cardCanvas(data, lang, 3);
-    const jpeg = new Uint8Array(await (await canvasBlob(c, "image/jpeg", 0.92)).arrayBuffer());
-    saveBlob(pdfFromJpeg(jpeg, c.width, c.height, title), exportName(data, "pdf", label));
+  if (fmt === "png" || fmt === "jpg" || fmt === "pdf") {
+    const c = await cardCanvas(data, lang, fmt === "jpg" ? 2 : 3);
+    await saveCanvas(c, fmt, exportName(data, fmt, label).replace(/\.[a-z]+$/, ""), title);
   } else if (fmt === "story") {
     const c = await storyCanvas(data, lang);
     saveBlob(await canvasBlob(c, "image/jpeg", 0.92), exportName(data, "story.jpg", label));
