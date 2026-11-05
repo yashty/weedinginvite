@@ -147,6 +147,7 @@
   /* ---------- location pin ---------- */
   if (data.qr === undefined) data.qr = true;
   if (data.o === undefined) data.o = "";
+  if (data.f === undefined) data.f = "";
   if (!QR_STYLES[data.qs]) data.qs = "rounded";
 
   function renderLoc() {

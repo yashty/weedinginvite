@@ -174,7 +174,43 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
   el.dir = LANGS[lang].dir;
   el.style.setProperty("--script-font", `"${LANGS[lang].font}"`);
   applyPalette(el, data.t);
-  el.innerHTML = `
+  /* "A page for each ceremony": a cover page, then one page per ceremony. Guests swipe; exports stack them. */
+  const paged = !compact && data.f === "p" && events.length > 0;
+  const [n1, n2] = nameOrder(data);
+  const mapA = (ev) => (interactive && (Array.isArray(ev.ll) || ev.v) ? `<a class="inv-link" target="_blank" rel="noopener" href="${mapLink(ev.v, ev.v ? "" : data.a, ev.ll)}">${L("inv_map")}</a>` : "");
+  const rsvpHtml = data.p && interactive ? `<h2 class="inv-section">${L("inv_rsvp")}</h2>
+    <div class="inv-rsvp">
+      <a class="inv-btn" target="_blank" rel="noopener" href="${rsvp(true)}">${L("inv_yes")}</a>
+      <a class="inv-btn ghost" target="_blank" rel="noopener" href="${rsvp(false)}">${L("inv_no")}</a>
+    </div>` : "";
+  const cover = `<section class="inv-page">
+      <p class="inv-small">${L("inv_blessing")}</p>
+      ${orn}
+      <p class="inv-host">${data.h ? esc(data.h) : L("inv_together")}</p>
+      <p class="inv-small">${L("inv_invite")}</p>
+      <h1 class="inv-names"><span>${esc(n1) || "&nbsp;"}</span><span class="inv-and">${L("inv_and")}</span><span>${esc(n2) || "&nbsp;"}</span></h1>
+      ${orn}
+      ${data.d ? `<p class="inv-label">${L("inv_save")}</p><p class="inv-date">${esc(fmtDate(lang, data.d))}</p>${data.tm ? `<p class="inv-time"><bdi>${esc(fmtTime(lang, data.tm))}</bdi></p>` : ""}` : ""}
+      ${data.v ? `<p class="inv-label">${L("inv_venue")}</p><p class="inv-venue">${esc(data.v)}</p>${data.a ? `<p class="inv-address">${esc(data.a)}</p>` : ""}${mapA({ v: data.v, ll: data.ll })}` : ""}
+      ${showQR ? `<figure class="inv-qr"><div class="qr-tile" data-qr="${esc(mapLink(data.v, data.a, data.ll))}" data-tpl="${esc(data.t)}" data-style="${esc(data.qs || "rounded")}"></div><figcaption>${L("qr_scan")}</figcaption></figure>` : ""}
+      ${data.m ? `<p class="inv-message">“${esc(data.m)}”</p>` : ""}
+    </section>`;
+  const evPages = events.map((ev, i) => `<section class="inv-page">
+      <p class="inv-small">${esc(n1)} ${L("inv_and")} ${esc(n2)}</p>
+      ${orn}
+      <h2 class="inv-ev-name">${esc(eventName(lang, ev))}</h2>
+      ${ev.d ? `<p class="inv-date">${esc(fmtDate(lang, ev.d))}</p>` : ""}
+      ${ev.tm ? `<p class="inv-time"><bdi>${esc(fmtTime(lang, ev.tm))}</bdi></p>` : ""}
+      ${ev.v || data.v ? `<p class="inv-label">${L("inv_venue")}</p><p class="inv-venue">${esc(ev.v || data.v)}</p>${!ev.v && data.a ? `<p class="inv-address">${esc(data.a)}</p>` : ""}${mapA(ev)}` : ""}
+      ${i === events.length - 1 ? rsvpHtml : ""}
+    </section>`).join("");
+  const pagedHtml = `<div class="invite-frame">
+      <div class="inv-pages${interactive ? "" : " stack"}">${cover}${evPages}</div>
+      ${interactive ? `<div class="inv-dots" role="group">${[0, ...events.map((_, i) => i + 1)].map((i) => `<button type="button" aria-label="${i + 1}"${i === 0 ? ' class="on"' : ""}></button>`).join("")}</div>` : ""}
+      ${interactive ? "" : orn}
+    </div>`;
+
+  el.innerHTML = paged ? pagedHtml : `
     <div class="invite-frame">
       <p class="inv-small">${L("inv_blessing")}</p>
       ${orn}
@@ -218,6 +254,16 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
     </div>`;
   startCountdown(el);
   if (showQR) hydrateQR(el);
+  if (paged && interactive) wirePager(el);
+}
+
+/* Dots follow the swipe; tapping a dot jumps to that page. */
+function wirePager(el) {
+  const box = el.querySelector(".inv-pages"), dots = [...el.querySelectorAll(".inv-dots button")];
+  const rtl = el.dir === "rtl";
+  const index = () => Math.round(Math.abs(box.scrollLeft) / box.clientWidth);
+  box.addEventListener("scroll", () => { const i = index(); dots.forEach((d, k) => d.classList.toggle("on", k === i)); }, { passive: true });
+  dots.forEach((d, k) => d.addEventListener("click", () => box.scrollTo({ left: (rtl ? -1 : 1) * k * box.clientWidth, behavior: "smooth" })));
 }
 
 function startCountdown(el) {

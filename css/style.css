@@ -564,6 +564,17 @@ html[lang="en"] :is(.downloads, .guest-dl) h3 { font-family: var(--ui-font) !imp
   .jump { display: inline-flex; position: fixed; right: 16px; bottom: 16px; z-index: 30; box-shadow: var(--shadow-lg); }
 }
 
+/* Invitation format: a page for each ceremony */
+.inv-pages { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.inv-pages::-webkit-scrollbar { display: none; }
+.inv-page { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; display: grid; align-content: center; justify-items: center; }
+.inv-pages.stack { display: block; overflow: visible; }
+.inv-pages.stack .inv-page + .inv-page { margin-top: 2.4em; padding-top: 2.4em; border-top: 1px solid color-mix(in srgb, var(--c-accent) 40%, transparent); }
+.inv-ev-name { font-family: var(--c-names), var(--script-font), serif !important; font-weight: var(--c-names-w, 700) !important; font-size: 2.3em; line-height: 1.15; color: var(--c-accent); margin: .3em 0 .5em; letter-spacing: 0; }
+.inv-dots { display: flex; justify-content: center; gap: .6em; margin-top: 1.1em; }
+.inv-dots button { width: .75em; height: .75em; padding: 0; border-radius: 50%; border: 1px solid var(--c-accent); background: none; cursor: pointer; transition: background-color .3s, transform .3s; }
+.inv-dots button.on { background: var(--c-accent); transform: scale(1.2); }
+
 /* Editor steps */
 .editor-sub { margin: -.4rem 0 .2rem; color: var(--muted); max-width: 40rem; }
 .stepper { position: sticky; top: 64px; z-index: 20; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; padding: .6rem; margin-inline: -.2rem; border-radius: 999px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border: 1px solid var(--line); }
