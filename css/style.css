@@ -293,7 +293,22 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 .car-btn:disabled { opacity: .35; cursor: default; }
 .car-progress { position: relative; width: min(320px, 60%); height: 2px; margin: 2.2rem auto 0; border-radius: 2px; background: var(--line); overflow: hidden; }
 .car-progress i { position: absolute; left: 0; top: 0; height: 100%; background: var(--foil); border-radius: inherit; transition: transform .8s var(--ease); }
-@media (max-width: 640px) { .car-btn { width: 46px; height: 46px; } .car-track { padding-block: 40px 80px; } }
+.tile { scroll-snap-stop: always; -webkit-tap-highlight-color: transparent; }
+.car-btn { -webkit-tap-highlight-color: transparent; }
+/* Phones: bigger cards sized to the screen (never taller than ~55% of it), one card per swipe, thumb-sized controls. */
+@media (max-width: 640px) {
+  .carousel { --cw: clamp(150px, min(68vw, 36svh), 280px); }
+  .car-track { padding-block: 32px 76px; gap: 14px; perspective: 1000px; }
+  .car-btn { width: 48px; height: 48px; }
+  .car-meta { gap: 10px; }
+  .car-cta { width: 100%; max-width: 260px; }
+  .car-progress { margin-top: 1.6rem; }
+}
+/* Landscape phones / short windows */
+@media (max-height: 520px) and (min-width: 641px) {
+  .carousel { --cw: clamp(150px, 34svh, 240px); }
+  .car-track { padding-block: 24px 64px; }
+}
 
 .steps { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); counter-reset: s; }
 .steps li { padding: 2.2rem 2rem 2.4rem; position: relative; text-align: center; border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow-sm); border: var(--card-border); }
