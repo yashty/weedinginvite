@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shubh Nimantran · Wedding Invitations & Video Invites</title>
   <meta name="description" content="Create wedding invitations and video invites in 13 Indian languages. Share on WhatsApp, collect RSVPs.">
-  <meta name="theme-color" content="#faf6f0" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#14100e" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#191115" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,6 +21,7 @@
         <a href="#languages" data-i18n="nav_lang">Languages</a>
         <a href="#video" data-i18n="nav_video">Video invites</a>
         <a href="#designs" data-i18n="nav_templates">Designs</a>
+        <a href="biodata.html" data-i18n="nav_biodata">Biodata</a>
         <select id="ui-lang" class="lang-select" aria-label="Language"></select>
         <a class="btn small" href="create.html" data-i18n="nav_create">Create invite</a>
       </nav>
@@ -29,8 +30,11 @@
 
   <main id="main">
     <section class="hero">
+      <span class="floral tl" aria-hidden="true"></span>
+      <span class="floral br" aria-hidden="true"></span>
       <div class="wrap">
         <div class="hero-text">
+          <p class="eyebrow" data-intro data-i18n="hero_eyebrow">Shubh Vivah</p>
           <h1 data-intro data-i18n="hero_title">Beautiful wedding invitations, in your language</h1>
           <p class="hero-sub" data-intro data-i18n="hero_sub"></p>
           <div class="hero-cta" data-intro>
@@ -54,8 +58,10 @@
         <div class="lang-demo">
           <div>
             <div class="section-head">
+              <p class="eyebrow" data-i18n="eyebrow_lang"></p>
               <h2 data-i18n="lang_title"></h2>
               <p data-i18n="lang_desc"></p>
+              <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
             </div>
             <ul class="lang-list" id="lang-list"></ul>
           </div>
@@ -69,8 +75,10 @@
         <div class="phone"><canvas id="feature-video" aria-label="Video invitation preview"></canvas></div>
         <div>
           <div class="section-head">
+            <p class="eyebrow" data-i18n="eyebrow_video"></p>
             <h2 data-i18n="video_title"></h2>
             <p data-i18n="video_desc"></p>
+            <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
           </div>
           <ul class="facts">
             <li><i data-icon="music"></i><div><strong data-i18n="ed_music"></strong></div></li>
@@ -84,14 +92,45 @@
 
     <section id="designs" class="section band">
       <div class="wrap">
-        <div class="section-head"><h2 data-i18n="templates_title"></h2><p data-i18n="s2_d"></p></div>
+        <div class="section-head center">
+          <p class="eyebrow" data-i18n="eyebrow_designs"></p>
+          <h2 data-i18n="templates_title"></h2>
+          <p data-i18n="s2_d"></p>
+          <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
+        </div>
         <div class="gallery" id="gallery"></div>
       </div>
     </section>
 
-    <section class="section">
+    <section id="biodata" class="section">
+      <span class="floral tr" aria-hidden="true"></span>
+      <div class="wrap bio-teaser">
+        <div>
+          <div class="section-head">
+            <p class="eyebrow" data-i18n="eyebrow_biodata"></p>
+            <h2 data-i18n="bio_landing_title"></h2>
+            <p data-i18n="bio_landing_desc"></p>
+            <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
+          </div>
+          <ul>
+            <li data-i18n="bio_sec_family"></li>
+            <li data-i18n="bio_sec_horoscope"></li>
+            <li data-i18n="bio_sec_education"></li>
+            <li data-i18n="bio_sec_contact"></li>
+          </ul>
+          <a class="btn" href="biodata.html"><span data-i18n="bio_cta"></span><i data-icon="arrow"></i></a>
+        </div>
+        <div class="bio-preview"><div id="bio-demo"></div></div>
+      </div>
+    </section>
+
+    <section class="section band">
       <div class="wrap">
-        <div class="section-head"><h2 data-i18n="steps_title"></h2></div>
+        <div class="section-head center">
+          <p class="eyebrow" data-i18n="eyebrow_steps"></p>
+          <h2 data-i18n="steps_title"></h2>
+          <div class="divider" aria-hidden="true"><i data-icon="flourish"></i></div>
+        </div>
         <ol class="steps">
           <li><span class="n">1</span><h3 data-i18n="s1_t"></h3><p data-i18n="s1_d"></p></li>
           <li><span class="n">2</span><h3 data-i18n="s2_t"></h3><p data-i18n="s2_d"></p></li>
@@ -100,8 +139,11 @@
       </div>
     </section>
 
-    <section class="section band closing">
+    <section class="section closing">
+      <span class="floral tl" aria-hidden="true"></span>
+      <span class="floral br" aria-hidden="true"></span>
       <div class="wrap">
+        <div class="divider" aria-hidden="true" style="margin-bottom:2rem"><i data-icon="flourish"></i></div>
         <h2 data-i18n="cta_final"></h2>
         <p data-i18n="cta_final_sub"></p>
         <a class="btn" href="create.html"><span data-i18n="cta_create"></span><i data-icon="arrow"></i></a>
@@ -116,6 +158,7 @@
   <script src="js/invite.js"></script>
   <script src="js/video.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/biodata.js"></script>
   <script>
     hydrateIcons();
     const select = document.getElementById("ui-lang");
@@ -160,6 +203,7 @@
         </a>`).join("");
       document.querySelectorAll("[data-tpl]").forEach((el) =>
         renderInvite(el, { ...SAMPLE, t: el.dataset.tpl }, lang, { interactive: false, compact: true }));
+      renderBiodata(document.getElementById("bio-demo"), { ...BIO_SAMPLE, t: "ivory" }, lang);
       renderDemo();
       heroVideo.set({ ...SAMPLE, t: "midnight" }, lang);
       featVideo.set({ ...SAMPLE, t: "emerald" }, lang);

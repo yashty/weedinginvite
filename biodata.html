@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marriage Biodata · Shubh Nimantran</title>
+  <meta name="description" content="Create an elegant marriage biodata with family, horoscope, education and contact details. Share it on WhatsApp or download as JPG or PDF.">
+  <meta property="og:title" content="Marriage Biodata">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#191115" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip_link">Skip to main content</a>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html"><i data-icon="mark"></i><span>Shubh Nimantran</span></a>
+      <nav>
+        <a href="create.html" data-i18n="nav_create">Create invite</a>
+        <select id="ui-lang" class="lang-select" aria-label="Language"></select>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Shared view: what someone opening a biodata link sees. -->
+  <main class="bio-view" id="view" hidden>
+    <div id="view-card"></div>
+    <div class="downloads" style="margin-top:1.2rem" id="view-dl">
+      <h3><i data-icon="download"></i><span data-i18n="dl_title"></span></h3>
+      <div class="fmt-row" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <button type="button" class="fmt" data-bfmt="jpg"><b>JPG</b><span>WhatsApp</span></button>
+        <button type="button" class="fmt" data-bfmt="png"><b>PNG</b><span>HD</span></button>
+        <button type="button" class="fmt" data-bfmt="pdf"><b>PDF</b><span>A5</span></button>
+      </div>
+    </div>
+    <div class="bio-actions"><a class="btn ghost" href="biodata.html"><i data-icon="plus"></i><span data-i18n="bio_make_own"></span></a></div>
+  </main>
+
+  <main class="wrap editor" id="main">
+    <form id="form" class="form" autocomplete="off" novalidate>
+      <div class="editor-head">
+        <h1 data-i18n="bio_title"></h1>
+        <span class="saved" id="saved" aria-hidden="true"><i></i><span data-i18n="saved_local"></span></span>
+      </div>
+
+      <section class="group">
+        <h2 data-i18n="bio_sec_profile"></h2>
+        <label class="field"><span data-i18n="bio_name"></span><input name="n" maxlength="80"></label>
+        <label class="field"><span data-i18n="bio_tagline"></span><input name="tg" maxlength="100"></label>
+        <label class="field"><span data-i18n="bio_invocation"></span><input name="inv" maxlength="60" data-i18n-ph="bio_invocation_ph"></label>
+        <div class="field"><span data-i18n="bio_photo"></span>
+          <div class="photo-row">
+            <img class="photo-thumb" id="photo-thumb" alt="" hidden>
+            <label class="btn ghost small"><i data-icon="camera"></i><span data-i18n="bio_photo_add"></span><input type="file" id="photo" accept="image/*"></label>
+            <button type="button" class="link-btn" id="photo-remove" data-i18n="bio_photo_remove" hidden></button>
+          </div>
+          <p class="note" data-i18n="bio_photo_note"></p>
+        </div>
+      </section>
+
+      <div id="sections" class="form"></div>
+
+      <section class="group">
+        <h2 data-i18n="ed_template"></h2>
+        <div class="swatches" id="swatches" role="group"></div>
+      </section>
+
+      <section class="group">
+        <h2 data-i18n="bio_language"></h2>
+        <select name="l" id="bio-lang"></select>
+      </section>
+    </form>
+
+    <aside class="side bio-side" id="side">
+      <div class="preview" id="card-view"><div id="preview"></div></div>
+      <div class="share">
+        <div class="share-link">
+          <input id="share-url" readonly aria-label="Biodata link">
+          <button type="button" class="btn small" id="copy"><i data-icon="link"></i><span data-i18n="ed_copy"></span></button>
+        </div>
+        <div class="share-btns">
+          <a class="btn small wa" id="wa" target="_blank" rel="noopener"><i data-icon="chat"></i><span data-i18n="ed_whatsapp"></span></a>
+          <a class="btn ghost small" id="open" target="_blank" rel="noopener"><i data-icon="external"></i><span data-i18n="bio_open"></span></a>
+        </div>
+      </div>
+      <div class="downloads" id="downloads">
+        <h3><i data-icon="download"></i><span data-i18n="dl_title"></span></h3>
+        <div class="fmt-row" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <button type="button" class="fmt" data-bfmt="jpg"><b>JPG</b><span>WhatsApp</span></button>
+          <button type="button" class="fmt" data-bfmt="png"><b>PNG</b><span>HD</span></button>
+          <button type="button" class="fmt" data-bfmt="pdf"><b>PDF</b><span>A5</span></button>
+        </div>
+      </div>
+    </aside>
+
+    <a class="btn jump" href="#side"><i data-icon="eye"></i><span data-i18n="ed_card"></span></a>
+  </main>
+
+  <script src="js/vendor/html-to-image.js"></script>
+  <script src="js/vendor/motion.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/invite.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/biodata.js"></script>
+  <script src="js/bio-editor.js"></script>
+</body>
+</html>

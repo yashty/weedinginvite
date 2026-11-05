@@ -34,10 +34,23 @@ Live: https://yashty.github.io/weedinginvite/
   - **MP4 / WebM** video
 
   The images and PDF use the print version of the card, without the countdown or buttons. Fonts are embedded, so every script comes out exactly as it appears on screen. Guests can also download the JPG, PDF and story image from the invite page.
+- **Marriage biodata (`biodata.html`):** a framed biodata card with personal details, horoscope (rashi, nakshatra, gotra, manglik), education and career, family background, about and expectations, and contact.
+  - Uses the same ten designs as the invitations, so a biodata can match its invitation.
+  - Optional photo, cropped to 4:5 and set in an arch frame. It stays on the device and appears in downloads, but is never put in the link.
+  - Share the link on WhatsApp, or download JPG, PNG (HD) or PDF (A5). On phones, label and value stack so long entries stay readable.
+  - Empty fields and sections are left off the card.
 - **Guest experience:** an envelope-style cover opens to the card, which has a countdown, a map link and one-tap RSVP over WhatsApp.
 - **Sharing:** the whole invitation is stored in the link, so no database is needed. You can copy the link, share it on WhatsApp, or download the card as a PNG.
 
 ## Design
+
+The visual theme is warm and ceremonial:
+
+- **Palette:** ivory paper (`#fbf7f0`), deep maroon ink and accent (`#3b1520`, `#7d1f35`), muted gold foil (`#b38a4c` plus a foil gradient), and blush and sage pastels for the hero wash. In dark mode it becomes a plum night with gold accents.
+- **Type:** Cormorant Garamond for headlines, Cinzel for small royal labels (eyebrows, card labels, section titles), and Plus Jakarta Sans for body text and form fields.
+- **Cards:** invitation and biodata cards have a foil gradient border taken from each design's accent colour, soft rounded corners and layered shadows. Ceremony and biodata panels each carry a small foil tab.
+- **Decorative touches:** gold-line floral sprigs in the hero and closing sections, foil hairline dividers with a lotus flourish, and a gentle shimmer that sweeps across buttons and RSVP buttons on hover (turned off when reduced motion is requested).
+- **Spacing:** generous section padding, centred section heads with eyebrows and dividers, and editor groups set as separate cards.
 
 The look follows two design guides, applied by hand:
 
@@ -78,6 +91,8 @@ Animation uses [Motion](https://motion.dev) 14.9.1, included in the repo as `js/
 | `index.html` | Landing page |
 | `create.html` + `js/editor.js` | Editor: card and video preview, sharing, video export |
 | `invite.html` | The page guests see |
+| `biodata.html` + `js/bio-editor.js` | Biodata builder and shared biodata view |
+| `js/biodata.js` | Biodata sections, sample and card rendering |
 | `js/invite.js` | Templates, ornaments, card rendering, link encoding |
 | `js/video.js` | Video renderer, music and recording |
 | `js/i18n.js` | Languages and all translations |
