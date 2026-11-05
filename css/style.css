@@ -100,7 +100,6 @@ body {
   font: 400 16px/1.65 var(--script-font), var(--ui-font);
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
   caret-color: var(--accent);
-  scrollbar-color: color-mix(in srgb, var(--ink) 25%, transparent) transparent;
 }
 /* scrollbars are hidden everywhere; scrolling itself still works */
 html, body, * { scrollbar-width: none; }
@@ -489,12 +488,12 @@ html:not([lang="en"]) .editor .group > h2 { font-family: var(--script-font), var
 .map-foot { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 .map-spacer { flex: 1; }
 @media (max-width: 560px) { .mapdlg { padding: 0; } .mapdlg-card { border-radius: 0; max-height: 100svh; height: 100svh; } .map-box { height: auto; } }
-.side { position: sticky; top: 84px; display: grid; gap: 1rem; max-height: calc(100svh - 100px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding: 2px 4px 2px 2px; }
+.side { position: sticky; top: 84px; display: grid; gap: 1rem; max-height: calc(100svh - 100px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 2px 4px 2px 2px; }
 .seg { display: inline-grid; grid-auto-flow: column; padding: 4px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); justify-self: start; }
 .seg button { border: 0; background: none; padding: .5em 1.2em; border-radius: 999px; font: 600 .85rem/1 var(--ui-font); color: var(--muted); cursor: pointer; display: inline-flex; gap: .4em; align-items: center; }
 html:not([lang="en"]) .seg button { font-family: var(--script-font), var(--ui-font); }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
-.preview { max-height: max(340px, calc(100svh - 520px)); overflow: auto; border-radius: 18px; scrollbar-width: thin; }
+.preview { max-height: max(340px, calc(100svh - 520px)); overflow: auto; border-radius: 18px; scrollbar-width: none; }
 .preview .invite { box-shadow: var(--shadow); }
 .bio-side .preview { max-height: max(420px, calc(100svh - 360px)); }
 .video-box { display: grid; gap: 1rem; justify-items: center; }
