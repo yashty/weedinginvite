@@ -45,9 +45,15 @@
             <a class="btn" href="create.html"><span data-i18n="cta_create">Create your invite</span><i data-icon="arrow"></i></a>
             <a class="btn ghost" href="#designs" data-i18n="cta_designs">See designs</a>
           </div>
-          <div class="hero-langs" id="hero-langs" data-intro></div>
+          <ul class="hero-points" data-intro>
+            <li><i data-icon="globe"></i><span data-i18n="eyebrow_lang"></span></li>
+            <li><i data-icon="video"></i><span data-i18n="nav_video"></span></li>
+            <li><i data-icon="heart"></i><span data-i18n="nav_biodata"></span></li>
+          </ul>
         </div>
         <div class="stage" id="stage">
+          <span class="orbit o1" aria-hidden="true"></span><span class="orbit o2" aria-hidden="true"></span>
+          <span class="spark s1" aria-hidden="true"></span><span class="spark s2" aria-hidden="true"></span><span class="spark s3" aria-hidden="true"></span><span class="spark s4" aria-hidden="true"></span>
           <div class="back-card" aria-hidden="true"><div id="hero-card"></div></div>
           <div class="phone">
             <canvas id="hero-video" aria-label="Video invitation preview"></canvas>
@@ -55,6 +61,7 @@
           </div>
         </div>
       </div>
+      <span class="scroll-cue" aria-hidden="true"></span>
     </section>
 
     <section id="languages" class="section band">
@@ -231,8 +238,6 @@
       setPageLang(lang);
       applyI18n(lang);
       renderInvite(document.getElementById("hero-card"), { ...SAMPLE, t: "royal" }, lang, { interactive: false, compact: true });
-      document.getElementById("hero-langs").innerHTML = Object.entries(LANGS)
-        .map(([c, m]) => `<button type="button" lang="${c}" data-lang="${c}" class="${c === lang ? "on" : ""}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</button>`).join("");
       const entries = Object.entries(LANGS);
       const pill = ([c, m], dup) => `<button type="button" data-lang="${c}"${dup ? ' aria-hidden="true" tabindex="-1"' : ""}><span class="native" lang="${c}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</span><span class="code">${c}</span></button>`;
       const row = (arr, rev) => `<div class="m-row${rev ? " rev" : ""}"><div class="m-track">${arr.map((e) => pill(e)).join("")}${arr.map((e) => pill(e, true)).join("")}</div></div>`;
@@ -258,9 +263,6 @@
 
     fillLangSelect(select, lang);
     select.addEventListener("change", () => setLang(select.value));
-    document.getElementById("hero-langs").addEventListener("click", (e) => {
-      const b = e.target.closest("button[data-lang]"); if (b) setLang(b.dataset.lang);
-    });
     document.getElementById("lang-list").addEventListener("click", (e) => {
       const b = e.target.closest("button[data-lang]"); if (!b || b.dataset.lang === demoLang) return;
       demoLang = b.dataset.lang;
@@ -286,6 +288,18 @@
     runVideo(featVideo, document.getElementById("feature-video"));
     FX.intro([...document.querySelectorAll("[data-intro]")]);
     FX.rise(document.getElementById("stage"));
+    /* The hero stage drifts a few pixels with the pointer (mouse only, not on touch or reduced motion). */
+    if (!FX.reduce && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      const stage = document.getElementById("stage"), hero = stage.closest(".hero");
+      let tick = 0, nx = 0, ny = 0;
+      const apply = () => { tick = 0; stage.style.setProperty("--px", nx.toFixed(3)); stage.style.setProperty("--py", ny.toFixed(3)); };
+      hero.addEventListener("pointermove", (e) => {
+        const r = hero.getBoundingClientRect();
+        nx = (e.clientX - r.left) / r.width * 2 - 1; ny = (e.clientY - r.top) / r.height * 2 - 1;
+        if (!tick) tick = requestAnimationFrame(apply);
+      });
+      hero.addEventListener("pointerleave", () => { nx = 0; ny = 0; apply(); });
+    }
   </script>
 </body>
 </html>
