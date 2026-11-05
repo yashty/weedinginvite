@@ -235,19 +235,37 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 .band::before { top: 0; } .band::after { bottom: 0; }
 
 .lang-demo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: clamp(32px, 6vw, 96px); align-items: start; }
-.lang-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
-.lang-list button { width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .95rem .2rem; background: none; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; color: var(--muted); font: inherit; text-align: start; transition: color .2s, padding .35s var(--ease); }
-.lang-list li:nth-child(odd) button { padding-inline-end: 1.4rem; }
-.lang-list li:nth-child(even) button { padding-inline-start: 1.4rem; border-inline-start: 1px solid var(--line); }
-.lang-list .native { font-size: 1.4rem; color: var(--ink); }
-.lang-list .code { font: 500 .72rem/1 var(--royal-font); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
-.lang-list button:hover .native { color: var(--accent); }
+/* Language tiles: each language in its own script, the chosen one lit in gold */
+.lang-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.lang-list[data-pre] li { opacity: 0; }
+.lang-list button { position: relative; isolation: isolate; width: 100%; min-height: 92px; display: grid; align-content: space-between; gap: .7rem; padding: 1rem 1.05rem .9rem; border-radius: var(--r-sm); background: var(--surface); border: var(--card-border); color: var(--ink); font: inherit; text-align: start; cursor: pointer; box-shadow: var(--shadow-sm); -webkit-tap-highlight-color: transparent; transition: transform .5s var(--ease), box-shadow .5s var(--ease), border-color .4s var(--ease), background-color .4s var(--ease); }
+.lang-list button::before { content: ""; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 1px; background: var(--foil); opacity: 0; transition: opacity .5s var(--ease); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+.lang-list .native { font-size: 1.5rem; line-height: 1.25; color: var(--ink); transition: color .4s var(--ease); }
+.lang-list .code { display: flex; align-items: center; justify-content: space-between; font: 600 .68rem/1 var(--royal-font); letter-spacing: .22em; text-transform: uppercase; color: var(--muted); transition: color .4s var(--ease); }
+.lang-list .code::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); transform: scale(0); transition: transform .5s var(--ease); }
+.lang-list button:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.lang-list button:hover::before { opacity: .7; }
+.lang-list button.on { background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--gold) 20%, var(--surface)), var(--surface) 72%); box-shadow: var(--shadow), 0 16px 36px -18px var(--glow); }
+.lang-list button.on::before { opacity: 1; }
 .lang-list button.on .native { color: var(--accent); }
 .lang-list button.on .code { color: var(--accent); }
-.demo-card { position: sticky; top: 96px; }
+.lang-list button.on .code::after { transform: scale(1); box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 28%, transparent); }
+.lang-list button:active { transform: scale(.98); }
+/* Demo card: an offset gold frame, a floating language badge and a big numeral behind */
+.demo-card { position: sticky; top: 96px; isolation: isolate; }
+.demo-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 24px; border: 1px solid color-mix(in srgb, var(--gold) 65%, transparent); transform: translate(16px, 16px) rotate(2.5deg); }
+.demo-card::after { content: "13"; position: absolute; z-index: -2; right: -.18em; bottom: -.32em; font: italic 500 clamp(9rem, 18vw, 15rem)/1 var(--display-font); background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: .22; pointer-events: none; }
 .demo-card .invite { box-shadow: var(--shadow-lg); font-size: 14px; }
-@media (max-width: 900px) { .lang-demo { grid-template-columns: 1fr; } .demo-card { position: static; max-width: 440px; } }
-@media (max-width: 480px) { .lang-list { grid-template-columns: 1fr; } .lang-list li button { padding-inline: .2rem !important; border-inline-start: 0 !important; } }
+.demo-badge { position: absolute; z-index: 3; top: -14px; left: 18px; display: inline-flex; align-items: center; gap: .55em; padding: .55em 1.1em; border-radius: 999px; background: var(--surface); color: var(--ink); border: 1px solid color-mix(in srgb, var(--gold) 55%, var(--line)); box-shadow: var(--shadow); font-size: 1.05rem; line-height: 1.2; }
+.demo-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 25%, transparent); }
+@media (max-width: 900px) { .lang-demo { grid-template-columns: 1fr; } .demo-card { position: relative; max-width: 440px; margin-top: 8px; } }
+@media (max-width: 560px) {
+  .lang-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .lang-list button { min-height: 78px; padding: .8rem .75rem .7rem; }
+  .lang-list .native { font-size: 1.2rem; }
+  .lang-list .code { font-size: .6rem; letter-spacing: .16em; }
+  .demo-card::before { transform: translate(10px, 12px) rotate(2deg); }
+}
 
 .video-split { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: clamp(32px, 7vw, 110px); align-items: center; }
 .video-split .phone { transform: none; margin-inline: auto; }
