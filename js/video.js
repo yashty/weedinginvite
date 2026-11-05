@@ -123,7 +123,7 @@ class InviteVideo {
 
   async prepare() {
     if (!document.fonts) return;
-    const sample = [this.data.b, this.data.g, t(this.lang, "inv_invite")].join(" ");
+    const sample = [...nameOrder(this.data), t(this.lang, "inv_invite")].join(" ");
     const fams = (this.lang === "en" ? [this.p.latin] : [LANGS[this.lang].font, this.p.latin]).concat(this.p.names ? [this.p.names] : []);
     loadFont(this.lang);
     if (this.qrUrl && !this.qrImg && typeof qrBitmap === "function") {
@@ -331,9 +331,9 @@ class InviteVideo {
     }
 
     if (sc.id === "names") {
-      this.text(data.b, cy - 140, { size: 112, weight: 700, color: p.accent, k: k(0.1, 1.1), alpha: A, names: true });
+      this.text(nameOrder(data)[0], cy - 140, { size: 112, weight: 700, color: p.accent, k: k(0.1, 1.1), alpha: A, names: true });
       this.text(T("inv_and"), cy, { size: 44, k: k(0.6), alpha: A });
-      this.text(data.g, cy + 140, { size: 112, weight: 700, color: p.accent, k: k(0.9, 1.1), alpha: A, names: true });
+      this.text(nameOrder(data)[1], cy + 140, { size: 112, weight: 700, color: p.accent, k: k(0.9, 1.1), alpha: A, names: true });
       this.ornament(cy + 270, 1.5, k(1.4, 1.2), A);
     }
 
@@ -372,7 +372,7 @@ class InviteVideo {
     if (sc.id === "close") {
       let y = this.qrImg ? cy - 360 : cy - 240;
       y += this.text(T("inv_save"), y, { size: 28, color: p.accent, k: k(0.1) }) + 50;
-      y += this.text(`${data.b || ""} ${T("inv_and")} ${data.g || ""}`, y, { size: 72, weight: 700, color: p.accent, k: k(0.3, 1.1), maxW: VIDEO_W - 140, names: true });
+      y += this.text(`${nameOrder(data)[0] || ""} ${T("inv_and")} ${nameOrder(data)[1] || ""}`, y, { size: 72, weight: 700, color: p.accent, k: k(0.3, 1.1), maxW: VIDEO_W - 140, names: true });
       this.ornament(y + 10, 1.5, k(0.7, 1.2));
       y += 100;
       y += this.text(fmtDate(lang, data.d), y, { size: 36, k: k(1.0) }) + 30;
