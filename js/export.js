@@ -17,8 +17,8 @@ function saveBlob(blob, name) {
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
-function exportName(data, ext) {
-  const base = `invitation-${data.b || "bride"}-${data.g || "groom"}`.replace(/[\s/\\?%*:|"<>]+/g, "-");
+function exportName(data, ext, label = "") {
+  const base = `invitation-${data.b || "bride"}-${data.g || "groom"}${label ? `-${label}` : ""}`.replace(/[\s/\\?%*:|"<>]+/g, "-").replace(/-{2,}/g, "-");
   return `${base}.${ext}`;
 }
 
@@ -138,21 +138,21 @@ function pdfFromJpeg(jpeg, imgW, imgH, title = "") {
 }
 
 /* Run one export by format id. */
-async function exportInvite(fmt, data, lang) {
+async function exportInvite(fmt, data, lang, label = "") {
   const title = `${data.b || ""} & ${data.g || ""}`;
   if (fmt === "png") {
     const c = await cardCanvas(data, lang, 3);
-    saveBlob(await canvasBlob(c, "image/png"), exportName(data, "png"));
+    saveBlob(await canvasBlob(c, "image/png"), exportName(data, "png", label));
   } else if (fmt === "jpg") {
     const c = await cardCanvas(data, lang, 2);
-    saveBlob(await canvasBlob(c, "image/jpeg", 0.9), exportName(data, "jpg"));
+    saveBlob(await canvasBlob(c, "image/jpeg", 0.9), exportName(data, "jpg", label));
   } else if (fmt === "pdf") {
     const c = await cardCanvas(data, lang, 3);
     const jpeg = new Uint8Array(await (await canvasBlob(c, "image/jpeg", 0.92)).arrayBuffer());
-    saveBlob(pdfFromJpeg(jpeg, c.width, c.height, title), exportName(data, "pdf"));
+    saveBlob(pdfFromJpeg(jpeg, c.width, c.height, title), exportName(data, "pdf", label));
   } else if (fmt === "story") {
     const c = await storyCanvas(data, lang);
-    saveBlob(await canvasBlob(c, "image/jpeg", 0.92), exportName(data, "story.jpg"));
+    saveBlob(await canvasBlob(c, "image/jpeg", 0.92), exportName(data, "story.jpg", label));
   }
 }
 
@@ -167,8 +167,8 @@ function bindDownloads(root, getState, { onVideo, uiLang = () => getState().lang
     root.querySelectorAll("button[data-fmt]").forEach((x) => { x.disabled = true; });
     label.textContent = t(uiLang(), "dl_working");
     try {
-      const { data, lang } = getState();
-      await exportInvite(b.dataset.fmt, data, lang);
+      const { data, lang, label } = getState();
+      await exportInvite(b.dataset.fmt, data, lang, label);
     } catch (err) {
       console.error(err);
     } finally {

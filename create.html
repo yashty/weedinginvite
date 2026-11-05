@@ -47,6 +47,14 @@
         <button type="button" class="btn ghost small" id="add-event" style="justify-self:start"><i data-icon="plus"></i><span data-i18n="ed_add_event"></span></button>
       </section>
 
+      <section class="group" id="versions-group">
+        <h2 data-i18n="ver_title"></h2>
+        <p class="note" data-i18n="ver_desc"></p>
+        <div class="versions" id="versions"></div>
+        <p class="note" id="ver-private" data-i18n="ver_private" hidden></p>
+        <button type="button" class="btn ghost small" id="add-version" style="justify-self:start"><i data-icon="plus"></i><span data-i18n="ver_add"></span></button>
+      </section>
+
       <section class="group">
         <h2 data-i18n="ed_template"></h2>
         <div class="swatches" id="swatches" role="group"></div>
@@ -59,6 +67,7 @@
     </form>
 
     <aside class="side" id="side">
+      <label class="showing" id="showing" hidden><span data-i18n="ver_showing"></span><select id="active-version"></select></label>
       <div class="seg" role="group">
         <button type="button" data-view="card" aria-pressed="true"><i data-icon="eye"></i><span data-i18n="ed_card"></span></button>
         <button type="button" data-view="video" aria-pressed="false"><i data-icon="video"></i><span data-i18n="ed_video_tab"></span></button>

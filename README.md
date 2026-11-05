@@ -16,6 +16,11 @@ Live: https://yashty.github.io/weedinginvite/
 - **10 designs:** Royal Maroon, Marigold, Emerald Garden, Ivory Blush, Midnight Gold, Peacock, Lotus, Temple Silk, Mehndi and Sindoor Minimal.
   - Each design has its own colours, frame (double, arch, corners, temple border or line), ornament and background effect.
   - The card and the video draw from the same definition in `js/invite.js`.
+- **Guest versions:** make one invite with every ceremony, then add versions for different guests with some ceremonies left out, such as "Friends, without Sangeet" or "Office, without Sagai".
+  - Each version has its own link, WhatsApp share, downloads and video.
+  - A version's link holds only that version's ceremonies, so guests can't find the ones left out.
+  - Ceremonies added later are included in every version until you untick them.
+  - Versions are saved with the draft in the browser.
 - **Downloads:**
   - **JPG** (for WhatsApp) and **PNG** (HD) image of the card
   - **PDF**, A5 width, ready for printing
