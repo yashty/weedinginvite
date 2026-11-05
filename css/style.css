@@ -448,9 +448,9 @@ html[lang="en"] .steps h3 { font-family: var(--ui-font); font-size: 1.15rem; fon
 .form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
 .group { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.05rem; }
 .editor .group { padding: clamp(18px, 2.4vw, 28px); border-radius: var(--r); background: var(--surface); border: var(--card-border); box-shadow: var(--shadow-sm); }
-.editor .group > h2 { display: flex; align-items: center; gap: .8rem; font: 600 .78rem/1 var(--royal-font); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
-.editor .group > h2::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 70%, transparent), transparent); }
-html:not([lang="en"]) .editor .group > h2 { font-family: var(--script-font), var(--ui-font); text-transform: none; letter-spacing: 0; font-size: .95rem; }
+.editor .group > h2, .editor .group > .sec-head > h2 { display: flex; align-items: center; gap: .8rem; font: 600 .78rem/1 var(--royal-font); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.editor .group > h2::after, .editor .group > .sec-head > h2::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 70%, transparent), transparent); }
+html:not([lang="en"]) .editor .group > h2, html:not([lang="en"]) .editor .group > .sec-head > h2 { font-family: var(--script-font), var(--ui-font); text-transform: none; letter-spacing: 0; font-size: .95rem; }
 .field { display: grid; gap: .4rem; font-size: .84rem; font-weight: 500; color: var(--muted); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
@@ -803,3 +803,15 @@ html:not([lang="en"]) .eyebrow { font-family: var(--script-font), var(--ui-font)
   textarea { min-height: 88px; }
   .toggle input { min-height: 24px; }
 }
+
+/* Biodata layout editing: add / remove / reorder */
+.sec-head { display: flex; align-items: center; gap: .8rem; }
+.sec-head > h2 { flex: 1; min-width: 0; }
+.bio-field.wide { grid-column: 1 / -1; }
+.bf-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 28px; }
+.ctl { display: inline-flex; gap: .2rem; flex-shrink: 0; }
+.mini { width: 28px; height: 28px; display: inline-grid; place-items: center; border: 1px solid var(--line, rgba(0, 0, 0, .12)); border-radius: 8px; background: transparent; color: var(--muted); font: inherit; font-size: .8rem; line-height: 1; cursor: pointer; }
+.mini:hover, .mini:focus-visible { color: var(--accent); border-color: var(--accent); }
+.add-field { justify-self: start; max-width: 100%; font: inherit; font-size: .85rem; }
+.lay-actions { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+@media (pointer: coarse) { .mini { width: 36px; height: 36px; } }

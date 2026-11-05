@@ -26,12 +26,63 @@ const BIO_SAMPLE = {
   cp: "Rajesh Sharma (father)", ph: "+91 98765 43210", em: "", ad: "",
 };
 
-const BIO_KEYS = ["t", "l", "inv", "n", "tg", ...BIO_SECTIONS.flatMap((s) => s.f.map(([k]) => k))];
+const BIO_TYPES = {};
+BIO_SECTIONS.forEach((s) => s.f.forEach(([k, ty]) => { BIO_TYPES[k] = ty || "line"; }));
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
-/* Only the fields that belong in a shared link (no photo, no unknown keys, no blanks). */
+/* The layout is data.lay: [{ i: section id, ti: title (custom sections), f: [field keys] }].
+ * Built-in fields use their own keys; custom fields are "x1", "x2"… with labels in data.cl.
+ * Without data.lay the default order is used. Anything unknown is dropped, since links are untrusted. */
+function bioDefaultLayout() {
+  return BIO_SECTIONS.map((s) => ({ i: s.id, f: s.f.map(([k]) => k) }));
+}
+
+function bioLayout(data) {
+  if (!Array.isArray(data.lay)) return bioDefaultLayout();
+  const cl = data.cl && typeof data.cl === "object" ? data.cl : {};
+  const used = new Set();
+  const seen = new Set();
+  const out = [];
+  data.lay.slice(0, 30).forEach((s) => {
+    if (!s || typeof s !== "object") return;
+    const id = String(s.i || "");
+    const builtin = BIO_SECTIONS.some((b) => b.id === id);
+    const ti = typeof s.ti === "string" ? s.ti.slice(0, 60) : "";
+    if (seen.has(id) || (!builtin && !(/^s\d+$/.test(id) && ti))) return;
+    seen.add(id);
+    const f = (Array.isArray(s.f) ? s.f : []).slice(0, 60).filter((k) => {
+      const ok = typeof k === "string" && !used.has(k) &&
+        (has(BIO_TYPES, k) || (/^x\d+$/.test(k) && has(cl, k) && typeof cl[k] === "string" && cl[k]));
+      if (ok) used.add(k);
+      return ok;
+    });
+    out.push(builtin ? { i: id, f } : { i: id, ti, f });
+  });
+  return out;
+}
+
+function bioFieldLabel(data, lang, k) {
+  return has(BIO_TYPES, k) ? t(lang, `bio_f_${k}`) : String((data.cl && data.cl[k]) || "");
+}
+
+function bioSectionTitle(sec, lang) {
+  return sec.ti || t(lang, `bio_sec_${sec.i}`);
+}
+
+/* Only what belongs in a shared link: no photo, no unknown keys, no blanks, no removed fields. */
 function bioPublic(data) {
   const out = {};
-  BIO_KEYS.forEach((k) => { if (data[k]) out[k] = String(data[k]); });
+  ["t", "l", "inv", "n", "tg"].forEach((k) => { if (data[k]) out[k] = String(data[k]); });
+  const lay = bioLayout(data);
+  const cl = {};
+  lay.forEach((s) => s.f.forEach((k) => {
+    if (data[k]) out[k] = String(data[k]).slice(0, 400);
+    if (!has(BIO_TYPES, k)) cl[k] = String(data.cl[k]).slice(0, 60);
+  }));
+  if (Array.isArray(data.lay)) {
+    out.lay = lay;
+    if (Object.keys(cl).length) out.cl = cl;
+  }
   return out;
 }
 
@@ -62,11 +113,15 @@ function renderBiodata(el, data, lang = data.l || "en") {
   el.style.setProperty("--script-font", `"${LANGS[lang].font}"`);
   applyPalette(el, data.t);
 
-  const sections = BIO_SECTIONS.map((s) => {
-    const rows = s.f.filter(([k]) => data[k]).map(([k, type]) =>
-      `<dt>${L(`bio_f_${k}`)}</dt><dd>${type === "tel" || type === "date" || type === "time" ? `<bdi>${esc(bioValue(lang, k, type, data[k]))}</bdi>` : esc(bioValue(lang, k, type, data[k]))}</dd>`);
+  const sections = bioLayout(data).map((s) => {
+    const rows = s.f.filter((k) => data[k]).map((k) => {
+      const type = BIO_TYPES[k] || "text";
+      const val = esc(bioValue(lang, k, type, data[k]));
+      return `<dt>${esc(bioFieldLabel(data, lang, k))}</dt><dd>${type === "tel" || type === "date" || type === "time" ? `<bdi>${val}</bdi>` : val}</dd>`;
+    });
     if (!rows.length) return "";
-    return `<section class="bd-sec"><h3>${icon(s.icon)}<span>${L(`bio_sec_${s.id}`)}</span></h3><dl>${rows.join("")}</dl></section>`;
+    const ic = (BIO_SECTIONS.find((b) => b.id === s.i) || {}).icon || "star";
+    return `<section class="bd-sec"><h3>${icon(ic)}<span>${esc(bioSectionTitle(s, lang))}</span></h3><dl>${rows.join("")}</dl></section>`;
   }).join("");
 
   el.innerHTML = `

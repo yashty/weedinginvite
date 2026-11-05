@@ -21,22 +21,123 @@
   fillLangSelect(uiSelect, uiLang);
   fillLangSelect($("bio-lang"), data.l);
 
-  /* ---------- form sections, generated from BIO_SECTIONS ---------- */
+  /* ---------- form sections, generated from the layout (add / delete / reorder) ---------- */
   const inputType = { date: "date", time: "time", tel: "tel", email: "email" };
-  $("sections").innerHTML = BIO_SECTIONS.map((s) => `
-    <section class="group">
-      <h2 data-i18n="bio_sec_${s.id}"></h2>
-      <div class="row">${s.f.filter(([, ty]) => ty !== "text").map(([k, ty]) => `
-        <label class="field"><span data-i18n="bio_f_${k}"></span><input name="${k}" type="${inputType[ty] || "text"}" maxlength="120"${ty === "tel" ? ' inputmode="tel" autocomplete="tel"' : ""}${ty === "email" ? ' autocomplete="email"' : ""}></label>`).join("")}
-      </div>
-      ${s.f.filter(([, ty]) => ty === "text").map(([k]) => `
-        <label class="field"><span data-i18n="bio_f_${k}"></span><textarea name="${k}" rows="2" maxlength="400"></textarea></label>`).join("")}
-    </section>`).join("");
+  const ctl = (act, label, glyph) => `<button type="button" class="mini" data-act="${act}" aria-label="${esc(label)}" title="${esc(label)}">${glyph}</button>`;
+  const fieldHtml = (k) => {
+    const ty = BIO_TYPES[k] || "text";
+    const label = esc(bioFieldLabel(data, uiLang, k));
+    const control = ty === "text"
+      ? `<textarea name="${k}" rows="2" maxlength="400" aria-label="${label}"></textarea>`
+      : `<input name="${k}" type="${inputType[ty] || "text"}" maxlength="120" aria-label="${label}"${ty === "tel" ? ' inputmode="tel" autocomplete="tel"' : ""}${ty === "email" ? ' autocomplete="email"' : ""}>`;
+    return `<div class="field bio-field${ty === "text" ? " wide" : ""}" data-k="${k}">
+      <div class="bf-top"><span>${label}</span><span class="ctl">${ctl("up", t(uiLang, "bio_move_up"), "↑")}${ctl("down", t(uiLang, "bio_move_down"), "↓")}${ctl("del", t(uiLang, "bio_remove"), "✕")}</span></div>
+      ${control}</div>`;
+  };
+
+  function renderSections() {
+    const lay = bioLayout(data);
+    const present = new Set(lay.flatMap((s) => s.f));
+    const missing = Object.keys(BIO_TYPES).filter((k) => !present.has(k));
+    $("sections").innerHTML = lay.map((s) => `
+      <section class="group" data-s="${s.i}">
+        <div class="sec-head"><h2>${esc(bioSectionTitle(s, uiLang))}</h2><span class="ctl">${ctl("sup", t(uiLang, "bio_move_up"), "↑")}${ctl("sdown", t(uiLang, "bio_move_down"), "↓")}${ctl("sdel", t(uiLang, "bio_remove_section"), "✕")}</span></div>
+        <div class="row">${s.f.map(fieldHtml).join("")}</div>
+        <select class="add-field" aria-label="${esc(t(uiLang, "bio_add_field"))}">
+          <option value="">+ ${esc(t(uiLang, "bio_add_field"))}</option>
+          ${missing.map((k) => `<option value="${k}">${esc(t(uiLang, `bio_f_${k}`))}</option>`).join("")}
+          <option value="__custom">${esc(t(uiLang, "bio_custom_field"))}</option>
+        </select>
+      </section>`).join("") + `
+      <div class="lay-actions">
+        <button type="button" class="btn ghost small" data-act="addsec">+ ${esc(t(uiLang, "bio_add_section"))}</button>
+        ${Array.isArray(data.lay) ? `<button type="button" class="link-btn" data-act="reset">${esc(t(uiLang, "bio_reset_layout"))}</button>` : ""}
+      </div>`;
+    fillForm();
+  }
 
   function fillForm() {
     [...form.elements].forEach((el) => { if (el.name && el.name in data && el.type !== "file") el.value = data[el.name] || ""; });
     if (!data.l) $("bio-lang").value = "en";
   }
+
+  /* Apply a change to a copy of the layout, then redraw, keep focus and refresh the preview. */
+  function editLayout(fn, focus) {
+    const lay = bioLayout(data).map((s) => ({ ...s, f: [...s.f] }));
+    fn(lay);
+    data.lay = lay;
+    renderSections();
+    update();
+    const el = focus && $("sections").querySelector(focus);
+    if (el) el.focus();
+  }
+  const nextId = (prefix, taken) => { let n = 1; while (taken.has(prefix + n)) n++; return prefix + n; };
+
+  $("sections").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-act]");
+    if (!b) return;
+    const act = b.dataset.act;
+    const fieldEl = b.closest("[data-k]");
+    const secEl = b.closest("[data-s]");
+    const k = fieldEl && fieldEl.dataset.k;
+    const sid = secEl && secEl.dataset.s;
+    if (act === "reset") { delete data.lay; delete data.cl; renderSections(); update(); return; }
+    if (act === "addsec") {
+      const title = (prompt(t(uiLang, "bio_section_prompt")) || "").trim().slice(0, 60);
+      if (!title) return;
+      editLayout((lay) => { lay.push({ i: nextId("s", new Set(lay.map((s) => s.i))), ti: title, f: [] }); });
+      return;
+    }
+    if (["sup", "sdown", "sdel"].includes(act)) {
+      editLayout((lay) => {
+        const i = lay.findIndex((s) => s.i === sid);
+        if (act === "sdel") { lay.splice(i, 1); return; }
+        const j = act === "sup" ? i - 1 : i + 1;
+        if (j >= 0 && j < lay.length) [lay[i], lay[j]] = [lay[j], lay[i]];
+      }, `[data-s="${sid}"] [data-act="${act}"]`);
+      return;
+    }
+    // Field actions. "Up" on the first field moves it to the end of the previous section, and so on.
+    let focus = `[data-k="${k}"] [data-act="${act}"]`;
+    editLayout((lay) => {
+      const si = lay.findIndex((s) => s.i === sid);
+      const fi = lay[si].f.indexOf(k);
+      if (act === "del") {
+        lay[si].f.splice(fi, 1);
+        if (!has(BIO_TYPES, k)) { delete data[k]; if (data.cl) delete data.cl[k]; }
+        focus = null;
+      } else if (act === "up") {
+        if (fi > 0) [lay[si].f[fi], lay[si].f[fi - 1]] = [lay[si].f[fi - 1], lay[si].f[fi]];
+        else if (si > 0) { lay[si].f.splice(fi, 1); lay[si - 1].f.push(k); }
+      } else if (act === "down") {
+        if (fi < lay[si].f.length - 1) [lay[si].f[fi], lay[si].f[fi + 1]] = [lay[si].f[fi + 1], lay[si].f[fi]];
+        else if (si < lay.length - 1) { lay[si].f.splice(fi, 1); lay[si + 1].f.unshift(k); }
+      }
+    }, null);
+    const el = focus && $("sections").querySelector(focus);
+    if (el) el.focus();
+  });
+
+  $("sections").addEventListener("change", (e) => {
+    const sel = e.target.closest("select.add-field");
+    if (!sel || !sel.value) return;
+    const sid = sel.closest("[data-s]").dataset.s;
+    let key = sel.value;
+    let label = "";
+    if (key === "__custom") {
+      label = (prompt(t(uiLang, "bio_field_prompt")) || "").trim().slice(0, 60);
+      if (!label) { sel.value = ""; return; }
+    }
+    editLayout((lay) => {
+      if (key === "__custom") {
+        key = nextId("x", new Set([...Object.keys(data.cl || {}), ...lay.flatMap((s) => s.f)]));
+        data.cl = { ...(data.cl || {}), [key]: label };
+      }
+      lay.find((s) => s.i === sid).f.push(key);
+    }, null);
+    const el = $("sections").querySelector(`[name="${key}"]`);
+    if (el) el.focus();
+  });
 
   /* ---------- design swatches ---------- */
   function renderSwatches() {
@@ -126,6 +227,7 @@
   function applyUi() {
     setPageLang(uiLang);
     applyI18n(uiLang);
+    renderSections();
   }
   uiSelect.addEventListener("change", () => {
     uiLang = uiSelect.value;
@@ -133,7 +235,6 @@
     applyUi();
   });
 
-  fillForm();
   renderSwatches();
   showPhoto();
   applyUi();
