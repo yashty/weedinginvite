@@ -7,31 +7,80 @@
   <meta property="og:title" content="You're invited to our wedding">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="guest">
+  <div class="cover" id="cover">
+    <div class="cover-inner">
+      <small id="cover-blessing"></small>
+      <div id="cover-orn"></div>
+      <div class="names" id="cover-names"></div>
+      <small id="cover-date"></small>
+      <button type="button" class="btn" id="open-btn"></button>
+    </div>
+  </div>
+
   <div class="guest-bar">
-    <label><span id="read-in"></span> <select id="guest-lang"></select></label>
+    <select id="guest-lang" class="lang-select" aria-label="Language"></select>
+    <button type="button" class="btn small" id="watch"><i data-icon="play"></i><span id="watch-label"></span></button>
   </div>
   <main class="guest-main"><div id="invite"></div></main>
 
+  <div class="player" id="player" hidden>
+    <canvas id="player-canvas"></canvas>
+    <button type="button" class="btn small ghost close" id="player-close" style="background:#fff;color:#1d1512"><i data-icon="close"></i><span id="close-label"></span></button>
+  </div>
+
+  <script src="js/vendor/motion.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/invite.js"></script>
+  <script src="js/video.js"></script>
+  <script src="js/ui.js"></script>
   <script>
+    hydrateIcons();
     const params = new URLSearchParams(location.hash.slice(1));
     const data = decodeInvite(params.get("d") || "") || SAMPLE;
+    if (!TEMPLATES[data.t]) data.t = "royal";
     const select = document.getElementById("guest-lang");
     let lang = LANGS[params.get("l")] ? params.get("l") : (LANGS[data.l] ? data.l : "en");
+    const player = new InviteVideo(document.getElementById("player-canvas"), data, lang);
+    applyPalette(document.body, data.t);
+    document.querySelector('meta[property="og:title"]').content = `${data.b || ""} & ${data.g || ""}`;
 
     function render() {
       setPageLang(lang);
-      document.getElementById("read-in").textContent = t(lang, "inv_read_in");
+      document.body.style.setProperty("--script-font", `"${LANGS[lang].font}"`);
       renderInvite(document.getElementById("invite"), data, lang);
+      document.getElementById("watch-label").textContent = t(lang, "inv_watch");
+      document.getElementById("close-label").textContent = t(lang, "inv_close");
       if (data.b || data.g) document.title = `${data.b || ""} & ${data.g || ""}`;
+      const cover = document.getElementById("cover");
+      if (cover) {
+        cover.lang = lang; cover.dir = LANGS[lang].dir;
+        document.getElementById("cover-blessing").textContent = t(lang, "inv_blessing");
+        document.getElementById("cover-orn").innerHTML = ornamentSvg(tpl(data.t).orn);
+        document.getElementById("cover-names").innerHTML = `${esc(data.b)}<span>${esc(t(lang, "inv_and"))}</span>${esc(data.g)}`;
+        document.getElementById("cover-date").textContent = fmtDate(lang, data.d);
+        document.getElementById("open-btn").textContent = t(lang, "inv_open");
+      }
+      player.set(data, lang);
     }
+
     fillLangSelect(select, lang);
-    select.addEventListener("change", () => { lang = select.value; render(); });
+    select.addEventListener("change", () => { lang = select.value; FX.swap(document.getElementById("invite"), render); });
+    document.getElementById("open-btn").addEventListener("click", () =>
+      FX.openCover(document.getElementById("cover"), document.getElementById("invite")));
+
+    const box = document.getElementById("player");
+    document.getElementById("watch").addEventListener("click", async () => {
+      box.hidden = false;
+      FX.pop(box.querySelector("canvas"));
+      await player.prepare();
+      await player.playWithMusic();
+    });
+    document.getElementById("player-close").addEventListener("click", () => { player.stop(); box.hidden = true; });
+
     render();
   </script>
 </body>

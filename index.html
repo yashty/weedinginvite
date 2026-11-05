@@ -3,87 +3,188 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shubh Nimantran · Digital Wedding Invitations</title>
-  <meta name="description" content="Create beautiful digital wedding invitations in 13 Indian languages and share them on WhatsApp.">
+  <title>Shubh Nimantran · Wedding Invitations & Video Invites</title>
+  <meta name="description" content="Create wedding invitations and video invites in 13 Indian languages. Share on WhatsApp, collect RSVPs.">
+  <meta name="theme-color" content="#faf6f0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html">Shubh&nbsp;Nimantran</a>
-    <nav>
-      <a href="#designs" data-i18n="nav_templates">Designs</a>
-      <a href="#features" data-i18n="nav_features">Features</a>
-      <select id="ui-lang" aria-label="Language"></select>
-      <a class="btn small" href="create.html" data-i18n="nav_create">Create invite</a>
-    </nav>
+    <div class="wrap">
+      <a class="brand" href="index.html"><i data-icon="mark"></i><span>Shubh Nimantran</span></a>
+      <nav>
+        <a href="#languages" data-i18n="nav_lang">Languages</a>
+        <a href="#video" data-i18n="nav_video">Video invites</a>
+        <a href="#designs" data-i18n="nav_templates">Designs</a>
+        <select id="ui-lang" class="lang-select" aria-label="Language"></select>
+        <a class="btn small" href="create.html" data-i18n="nav_create">Create invite</a>
+      </nav>
+    </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="hero-text">
-        <h1 data-i18n="hero_title">Beautiful wedding invitations, in your language</h1>
-        <p data-i18n="hero_sub"></p>
-        <div class="hero-cta">
-          <a class="btn" href="create.html" data-i18n="cta_create">Create your invite</a>
-          <a class="btn ghost" href="#designs" data-i18n="cta_designs">See designs</a>
+      <div class="wrap">
+        <div class="hero-text">
+          <h1 data-intro data-i18n="hero_title">Beautiful wedding invitations, in your language</h1>
+          <p class="hero-sub" data-intro data-i18n="hero_sub"></p>
+          <div class="hero-cta" data-intro>
+            <a class="btn" href="create.html"><span data-i18n="cta_create">Create your invite</span><i data-icon="arrow"></i></a>
+            <a class="btn ghost" href="#designs" data-i18n="cta_designs">See designs</a>
+          </div>
+          <div class="hero-langs" id="hero-langs" data-intro></div>
         </div>
-        <div class="lang-chips" id="lang-chips"></div>
-      </div>
-      <div class="hero-card"><div id="hero-invite"></div></div>
-    </section>
-
-    <section id="features" class="section">
-      <h2 data-i18n="features_title"></h2>
-      <div class="features">
-        <article><span class="ico">अ</span><h3 data-i18n="f1_t"></h3><p data-i18n="f1_d"></p></article>
-        <article><span class="ico">↗</span><h3 data-i18n="f2_t"></h3><p data-i18n="f2_d"></p></article>
-        <article><span class="ico">✓</span><h3 data-i18n="f3_t"></h3><p data-i18n="f3_d"></p></article>
-        <article><span class="ico">✿</span><h3 data-i18n="f4_t"></h3><p data-i18n="f4_d"></p></article>
+        <div class="stage" id="stage">
+          <div class="back-card" aria-hidden="true"><div id="hero-card"></div></div>
+          <div class="phone">
+            <canvas id="hero-video" aria-label="Video invitation preview"></canvas>
+            <span class="phone-play"><span class="dot"></span><span data-i18n="ed_video_tab">Video</span></span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="designs" class="section">
-      <h2 data-i18n="templates_title"></h2>
-      <div class="gallery" id="gallery"></div>
+    <section id="languages" class="section band">
+      <div class="wrap">
+        <div class="lang-demo">
+          <div>
+            <div class="section-head">
+              <h2 data-i18n="lang_title"></h2>
+              <p data-i18n="lang_desc"></p>
+            </div>
+            <ul class="lang-list" id="lang-list"></ul>
+          </div>
+          <div class="demo-card"><div id="demo-card"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="video" class="section">
+      <div class="wrap video-split">
+        <div class="phone"><canvas id="feature-video" aria-label="Video invitation preview"></canvas></div>
+        <div>
+          <div class="section-head">
+            <h2 data-i18n="video_title"></h2>
+            <p data-i18n="video_desc"></p>
+          </div>
+          <ul class="facts">
+            <li><i data-icon="music"></i><div><strong data-i18n="ed_music"></strong></div></li>
+            <li><i data-icon="globe"></i><div><strong data-i18n="nav_lang"></strong></div></li>
+            <li><i data-icon="phone"></i><div><strong>9:16 · MP4 / WebM</strong></div></li>
+          </ul>
+          <a class="btn" href="create.html#video"><i data-icon="video"></i><span data-i18n="ed_video">Create video</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="designs" class="section band">
+      <div class="wrap">
+        <div class="section-head"><h2 data-i18n="templates_title"></h2><p data-i18n="s2_d"></p></div>
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head"><h2 data-i18n="steps_title"></h2></div>
+        <ol class="steps">
+          <li><span class="n">1</span><h3 data-i18n="s1_t"></h3><p data-i18n="s1_d"></p></li>
+          <li><span class="n">2</span><h3 data-i18n="s2_t"></h3><p data-i18n="s2_d"></p></li>
+          <li><span class="n">3</span><h3 data-i18n="s3_t"></h3><p data-i18n="s3_d"></p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section band closing">
+      <div class="wrap">
+        <h2 data-i18n="cta_final"></h2>
+        <p data-i18n="cta_final_sub"></p>
+        <a class="btn" href="create.html"><span data-i18n="cta_create"></span><i data-icon="arrow"></i></a>
+      </div>
     </section>
   </main>
 
-  <footer class="footer"><p data-i18n="footer"></p></footer>
+  <footer class="footer"><div class="wrap"><span>Shubh Nimantran</span><span data-i18n="footer"></span></div></footer>
 
+  <script src="js/vendor/motion.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/invite.js"></script>
+  <script src="js/video.js"></script>
+  <script src="js/ui.js"></script>
   <script>
+    hydrateIcons();
     const select = document.getElementById("ui-lang");
     let lang = preferredLang();
+    let demoLang = lang;
+
+    const heroVideo = new InviteVideo(document.getElementById("hero-video"), { ...SAMPLE, t: "midnight" }, lang);
+    const featVideo = new InviteVideo(document.getElementById("feature-video"), { ...SAMPLE, t: "emerald" }, lang);
+    function runVideo(v, el) {
+      if (FX.reduce) { v.prepare().then(() => v.still()); return; }
+      v.prepare().then(() => { if (!v.raf) v.still(); });
+      whenVisible(el, () => v.prepare().then(() => { if (!v.raf) v.play({ loop: true }); }), () => v.stop());
+    }
+
+    /* Language names appear in their own scripts; fetch only those glyphs, not whole fonts. */
+    Object.entries(LANGS).forEach(([c, m]) => {
+      if (c === "en") return;
+      const l = document.createElement("link");
+      l.rel = "stylesheet";
+      l.href = `https://fonts.googleapis.com/css2?family=${m.font.replace(/ /g, "+")}&text=${encodeURIComponent(m.name)}&display=swap`;
+      document.head.appendChild(l);
+    });
+
+    function renderDemo() {
+      loadFont(demoLang);
+      renderInvite(document.getElementById("demo-card"), { ...SAMPLE, t: "marigold", e: SAMPLE.e.slice(1) }, demoLang, { interactive: false });
+      document.querySelectorAll("#lang-list button").forEach((b) => b.classList.toggle("on", b.dataset.lang === demoLang));
+    }
 
     function render() {
       setPageLang(lang);
       applyI18n(lang);
-      renderInvite(document.getElementById("hero-invite"), { ...SAMPLE, l: lang }, lang, { interactive: false });
-      document.getElementById("gallery").innerHTML = Object.entries(TEMPLATES).map(([id, tpl]) => `
-        <figure class="tile">
+      renderInvite(document.getElementById("hero-card"), { ...SAMPLE, t: "royal" }, lang, { interactive: false, compact: true });
+      document.getElementById("hero-langs").innerHTML = Object.entries(LANGS)
+        .map(([c, m]) => `<button type="button" lang="${c}" data-lang="${c}" class="${c === lang ? "on" : ""}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</button>`).join("");
+      document.getElementById("lang-list").innerHTML = Object.entries(LANGS)
+        .map(([c, m]) => `<li><button type="button" data-lang="${c}"><span class="native" lang="${c}" style="font-family:'${m.font}',var(--ui-font)">${m.name}</span><span class="code">${c}</span></button></li>`).join("");
+      document.getElementById("gallery").innerHTML = Object.entries(TEMPLATES).map(([id, x]) => `
+        <a class="tile" href="create.html?t=${id}&l=${lang}">
           <div class="tile-preview"><div data-tpl="${id}"></div></div>
-          <figcaption>
-            <span>${tpl.name}</span>
-            <a class="btn small" href="create.html?t=${id}&l=${lang}">${esc(t(lang, "use_template"))}</a>
-          </figcaption>
-        </figure>`).join("");
+          <figcaption><span>${x.name}</span><span class="use">${icon("arrow")}</span></figcaption>
+        </a>`).join("");
       document.querySelectorAll("[data-tpl]").forEach((el) =>
-        renderInvite(el, { ...SAMPLE, t: el.dataset.tpl, e: [] }, lang, { interactive: false }));
-      document.getElementById("lang-chips").innerHTML = Object.entries(LANGS)
-        .map(([c, m]) => `<button class="chip${c === lang ? " on" : ""}" data-lang="${c}">${m.name}</button>`).join("");
+        renderInvite(el, { ...SAMPLE, t: el.dataset.tpl }, lang, { interactive: false, compact: true }));
+      renderDemo();
+      heroVideo.set({ ...SAMPLE, t: "midnight" }, lang);
+      featVideo.set({ ...SAMPLE, t: "emerald" }, lang);
+      heroVideo.prepare(); featVideo.prepare();
+      if (FX.reduce) { heroVideo.prepare().then(() => heroVideo.still()); featVideo.prepare().then(() => featVideo.still()); }
+    }
+
+    function setLang(c) {
+      lang = c; demoLang = c; select.value = c; rememberLang(c); render();
     }
 
     fillLangSelect(select, lang);
-    select.addEventListener("change", () => { lang = select.value; rememberLang(lang); render(); });
-    document.getElementById("lang-chips").addEventListener("click", (e) => {
-      const c = e.target.dataset.lang;
-      if (c) { lang = c; select.value = c; rememberLang(c); render(); }
+    select.addEventListener("change", () => setLang(select.value));
+    document.getElementById("hero-langs").addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-lang]"); if (b) setLang(b.dataset.lang);
     });
+    document.getElementById("lang-list").addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-lang]"); if (!b || b.dataset.lang === demoLang) return;
+      demoLang = b.dataset.lang;
+      FX.swap(document.getElementById("demo-card"), renderDemo);
+    });
+
     render();
+    runVideo(heroVideo, document.getElementById("hero-video"));
+    runVideo(featVideo, document.getElementById("feature-video"));
+    FX.intro([...document.querySelectorAll("[data-intro]")]);
+    FX.rise(document.getElementById("stage"));
   </script>
 </body>
 </html>
