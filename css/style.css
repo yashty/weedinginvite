@@ -342,10 +342,16 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 @media (max-width: 860px) { .video-split { grid-template-columns: 1fr; } .video-split .phone { width: min(70%, 280px); } }
 
 /* Design carousel */
-.carousel { --cw: clamp(224px, 24vw, 292px); position: relative; isolation: isolate; margin-top: clamp(-8px, -1vw, 0px); }
+/* Designs fit one screen: card size follows the window height */
+#designs { padding-block: clamp(24px, 4.5vh, 48px); }
+#designs .section-head { margin-bottom: 0; }
+#designs .section-head p { margin-top: .6rem; }
+#designs .section-head .divider { display: none; }
+#designs .section-head h2 { font-size: clamp(1.9rem, min(3.6vw, 6vh), 3rem); }
+.carousel { --cw: clamp(150px, min(24vw, calc((100svh - 450px) / 1.5)), 292px); position: relative; isolation: isolate; margin-top: clamp(-8px, -1vw, 0px); }
 .carousel::before { content: ""; position: absolute; left: 50%; top: 4%; width: min(900px, 120vw); height: 70%; transform: translateX(-50%); z-index: -1; pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 26%, transparent), transparent); filter: blur(10px); animation: glow-drift 9s ease-in-out infinite alternate; }
 @keyframes glow-drift { from { transform: translateX(-54%) scale(.92); opacity: .7; } to { transform: translateX(-46%) scale(1.06); opacity: 1; } }
-.car-track { position: relative; display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); padding: 56px calc(50% - var(--cw) / 2) 96px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; perspective: 1400px; perspective-origin: 50% 40%; cursor: grab; -webkit-user-select: none; user-select: none; }
+.car-track { position: relative; display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); padding: clamp(18px, 3.5vh, 40px) calc(50% - var(--cw) / 2) clamp(28px, 6vh, 60px); overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; perspective: 1400px; perspective-origin: 50% 40%; cursor: grab; -webkit-user-select: none; user-select: none; }
 .car-track::-webkit-scrollbar { display: none; }
 .car-track.grabbing { cursor: grabbing; }
 .car-track[data-pre] .tile-preview { opacity: 0; }
@@ -371,7 +377,7 @@ html:not([lang="en"]) .section-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem)
 .car-next:hover:not(:disabled) .icon { transform: translateX(3px); }
 .car-prev:hover:not(:disabled) .icon { transform: scaleX(-1) translateX(3px); }
 .car-btn:disabled { opacity: .35; cursor: default; }
-.car-progress { position: relative; width: min(320px, 60%); height: 2px; margin: 2.2rem auto 0; border-radius: 2px; background: var(--line); overflow: hidden; }
+.car-progress { position: relative; width: min(320px, 60%); height: 2px; margin: clamp(.8rem, 2vh, 1.4rem) auto 0; border-radius: 2px; background: var(--line); overflow: hidden; }
 .car-progress i { position: absolute; left: 0; top: 0; height: 100%; background: var(--foil); border-radius: inherit; transition: transform .8s var(--ease); }
 .tile { scroll-snap-stop: always; -webkit-tap-highlight-color: transparent; }
 .car-btn { -webkit-tap-highlight-color: transparent; }
