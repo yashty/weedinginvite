@@ -22,6 +22,7 @@ const TEMPLATES = {
   a_pond:     { name: "Royal Pond",     art: "pond",       bg: "#f8f1e1", bg2: "#e4ecdc", ink: "#2f3a30", accent: "#96344f", soft: "#556256",               frame: "none", orn: "lotus",   fx: "petals",  latin: "Cormorant Garamond", names: "Great Vibes", petal: "#f3b2c3" },
   a_noir:     { name: "Reception Noir", art: "noir",       bg: "#1f1d33", bg2: "#0c0b18", ink: "#f4ecd8", accent: "#e6c67e", soft: "rgba(244,236,216,.78)", frame: "none", orn: "line",    fx: "sparkle", latin: "Playfair Display",   names: "Great Vibes" },
   a_canopy:   { name: "Pink Canopy",    art: "canopy",     bg: "#fef3f0", bg2: "#f6d9d8", ink: "#4a2530", accent: "#a3274f", soft: "#7a4a56",               frame: "none", orn: "lotus",   fx: "petals",  latin: "Playfair Display",   names: "Great Vibes", petal: "#f1a1b6" },
+  a_doorway:  { name: "Maroon Doorway", art: "doorway",    bg: "#e9dfd0", bg2: "#d4c5ae", ink: "#3a2218", accent: "#8c1d3a", soft: "#5f4636",               frame: "none", orn: "line",    fx: "none",    latin: "Cormorant Garamond", names: "Great Vibes" },
   a_fiesta:   { name: "Mehendi Fiesta", art: "fiesta",     bg: "#fff7ea", bg2: "#fde6c0", ink: "#4a2410", accent: "#ae2159", soft: "#7a4a2c",               frame: "none", orn: "leaf",    fx: "petals",  latin: "Playfair Display",   names: "Great Vibes", petal: "#f6a21a" },
 };
 
@@ -252,6 +253,7 @@ function renderInvite(el, data, lang = data.l || "en", { interactive = true, com
       ${events.length ? `<h2 class="inv-section">${L("inv_events")}</h2>
         <ul class="inv-events">${events.map((ev) => `
           <li>
+            ${p.art && typeof medalUri === "function" ? `<img class="ev-medal" alt="" src="${medalUri(ev.k)}">` : ""}
             <strong>${esc(eventName(lang, ev))}</strong>
             <span>${[fmtDate(lang, ev.d), fmtTime(lang, ev.tm)].filter(Boolean).map((x) => `<bdi>${esc(x)}</bdi>`).join(" · ")}</span>
             ${ev.v ? `<span>${esc(ev.v)}</span>` : ""}

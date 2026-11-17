@@ -8,7 +8,8 @@ const SCENE_TOP_H = 170;   // top piece is 400 x 170
 const SCENE_BOT_H = 300;   // bottom piece is 400 x 300
 
 const _r = (seed) => { let s = seed >>> 0 || 1; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); };
-const _svg = (h, inner) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 ${h}">${inner}</svg>`;
+/* A faint paper grain over each piece gives the flat shapes a painted feel. */
+const _svg = (h, inner) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 ${h}"><defs><filter id="g" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="n"/><feColorMatrix in="n" values="0 0 0 0 .35  0 0 0 0 .27  0 0 0 0 .18  0 0 0 .5 -.12"/><feComposite in2="SourceGraphic" operator="in"/></filter></defs>${inner}<g filter="url(#g)" opacity=".55">${inner}</g></svg>`;
 const _uri = (s) => `url("data:image/svg+xml,${encodeURIComponent(s)}")`;
 const _n = (v) => Math.round(v * 10) / 10;
 
@@ -155,22 +156,35 @@ const ART = {
   /* arched doorway with a domed floral mandap and the couple */
   mandap: {
     top: () => {
-      const R = _r(11);
-      let o = `<path d="M0 0H400V${SCENE_TOP_H}Q200 -30 0 ${SCENE_TOP_H}Z" fill="#e7cfa4" opacity=".0"/>`;
-      o += `<path d="M0 0H400V0H0Z"/>`;
-      o += `<path d="M-6 ${SCENE_TOP_H + 10}V70Q-6 20 40 8Q90 -4 120 24Q160 54 200 54Q240 54 280 24Q310 -4 360 8Q406 20 406 70V${SCENE_TOP_H + 10}H370V82Q370 50 340 42Q300 32 268 66Q236 96 200 96Q164 96 132 66Q100 32 60 42Q30 50 30 82V${SCENE_TOP_H + 10}Z" fill="#d9b97f"/>`;
-      o += `<path d="M18 ${SCENE_TOP_H}V84Q18 58 48 52Q90 44 122 76Q160 108 200 108Q240 108 278 76Q310 44 352 52Q382 58 382 84V${SCENE_TOP_H}" fill="none" stroke="#fbf1de" stroke-width="2.4"/>`;
-      o += `<path d="M44 ${SCENE_TOP_H}V92Q44 70 70 66Q104 62 132 90Q164 122 200 122Q236 122 268 90Q296 62 330 66Q356 70 356 92V${SCENE_TOP_H}" fill="none" stroke="#b78f52" stroke-width="1.2"/>`;
-      for (let i = 0; i < 9; i++) o += flower(_n(8 + R() * 22), _n(40 + i * 14), 4.4, "#fff", "#f3e3b8", 5) + flower(_n(392 - R() * 22), _n(40 + i * 14), 4.4, "#fff", "#f3e3b8", 5);
-      o += leaf(18, 70, 34, -70, "#7f9c6a") + leaf(382, 70, 34, -110, "#7f9c6a") + leaf(22, 120, 30, -60, "#7f9c6a") + leaf(378, 120, 30, -120, "#7f9c6a");
-      return _svg(SCENE_TOP_H, o);
+      const R = _r(11), H = SCENE_TOP_H;
+      let o = `<path d="M-6 ${H + 10}V74Q-6 18 40 10Q86 2 118 30Q156 62 200 62Q244 62 282 30Q314 2 360 10Q406 18 406 74V${H + 10}H372V86Q372 54 340 48Q300 40 270 74Q238 104 200 104Q162 104 130 74Q100 40 60 48Q28 54 28 86V${H + 10}Z" fill="#d9b97f"/>`;
+      /* carved scallops along the arch */
+      for (let i = 0; i < 17; i++) { const t = i / 16, x = 34 + t * 332, y = 116 - Math.sin(Math.PI * t) * 52 + 4; o += `<circle cx="${_n(x)}" cy="${_n(y)}" r="5" fill="none" stroke="#fbf1de" stroke-width="1.4"/><circle cx="${_n(x)}" cy="${_n(y)}" r="1.6" fill="#fbf1de"/>`; }
+      o += `<path d="M18 ${H}V90Q18 62 48 56Q92 48 124 80Q162 114 200 114Q238 114 276 80Q308 48 352 56Q382 62 382 90V${H}" fill="none" stroke="#fbf1de" stroke-width="2.4"/>`;
+      /* patterned wall inside the arch */
+      let tiles = "";
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 9; c++) tiles += `<path d="M${40 + c * 40 + (r % 2) * 20} ${100 + r * 17}l8 8l-8 8l-8 -8z" fill="none" stroke="#e2cfa6" stroke-width=".9"/>`;
+      o += `<g opacity=".7">${tiles}</g>`;
+      for (let i = 0; i < 11; i++) o += flower(_n(8 + R() * 24), _n(34 + i * 13), 4.6, "#fff", "#f3e3b8", 5) + flower(_n(392 - R() * 24), _n(34 + i * 13), 4.6, "#fff", "#f3e3b8", 5);
+      o += `<path d="M26 20Q8 60 22 150M374 20Q392 60 378 150" stroke="#7f9c6a" stroke-width="1.6" fill="none"/>`;
+      for (let i = 0; i < 9; i++) o += leaf(_n(24 + R() * 6), 36 + i * 14, 20, -60 - R() * 40, "#7f9c6a") + leaf(_n(376 - R() * 6), 36 + i * 14, 20, -120 + R() * 40, "#7f9c6a");
+      o += `<path d="M330 30c18 8 36 24 46 50M70 30C52 38 34 54 24 80" stroke="#8aa774" stroke-width="1.4" fill="none"/>`;
+      return _svg(H, o);
     },
     bot: () => {
       const R = _r(5);
       let o = `<path d="M0 262H400V300H0Z" fill="#e8d6b4"/><path d="M0 262H400" stroke="#cfae72" stroke-width="2"/>`;
+      /* balustrade and pond */
+      o += `<path d="M0 232H400V262H0Z" fill="#c9e0e0" opacity=".55"/><path d="M0 222H400" stroke="#d6bd8a" stroke-width="3"/>`;
+      for (let i = 0; i < 40; i++) o += `<path d="M${i * 10 + 2} 222v10" stroke="#d6bd8a" stroke-width="2"/>`;
+      /* swan */
+      o += `<ellipse cx="364" cy="236" rx="18" ry="10" fill="#fdfcf8"/><path d="M352 232Q344 212 352 204Q358 200 360 208" stroke="#fdfcf8" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M349 203l-7 2l7 3z" fill="#e89a3c"/>`;
       o += banana(36, 252, 1.2, -95, "#5f8a56", "#4a7344") + banana(366, 252, 1.2, -85, "#5f8a56", "#4a7344");
       o += column(138, 130, 262, 8, "#f2e3bf", "#b58f4f") + column(262, 130, 262, 8, "#f2e3bf", "#b58f4f") + column(168, 138, 262, 6, "#f5e8c8", "#b58f4f") + column(232, 138, 262, 6, "#f5e8c8", "#b58f4f");
-      o += dome(200, 128, 150, 52, "#f7efdc", "#b58f4f");
+      /* glass dome with panes */
+      o += `<path d="M125 128Q125 70 200 62Q275 70 275 128Z" fill="#e9f3f3" fill-opacity=".55" stroke="#b58f4f" stroke-width="1.3"/>`;
+      o += `<path d="M200 62V128M160 70Q150 100 150 128M240 70Q250 100 250 128M126 112H274M132 90Q200 80 268 90" stroke="#b58f4f" stroke-width=".9" fill="none"/>`;
+      o += `<path d="M200 62v-9" stroke="#b58f4f" stroke-width="1.4"/><circle cx="200" cy="50" r="3" fill="#b58f4f"/>`;
       o += `<path d="M120 128h160" stroke="#b58f4f" stroke-width="3"/>`;
       o += `<path d="M150 262l8 -10h84l8 10zM140 270l12 -9h96l12 9z" fill="#efe0bd" stroke="#cfae72" stroke-width=".8"/>`;
       o += groom(176, 252, 0.98, { coat: "#f2c6c4", trim: "#b9965a", pants: "#fbf3e4", turban: "#f6ddd6", shawl: "#fff4e3" });
@@ -372,6 +386,32 @@ const ART = {
       return _svg(SCENE_BOT_H, o);
     },
   },
+
+  /* a maroon doorway and the couple walking in, her train trailing behind */
+  doorway: {
+    top: () => {
+      const R = _r(91);
+      let o = `<path d="M0 0H400V${SCENE_TOP_H}H0Z" fill="#d9cfc0" opacity=".0"/>`;
+      for (let i = 0; i < 9; i++) o += `<path d="M${R() * 400} ${R() * 120}h${20 + R() * 40}" stroke="#c9bba5" stroke-width="1" opacity=".5"/>`;
+      o += `<path d="M130 ${SCENE_TOP_H}V70Q130 22 180 22Q230 22 230 70V${SCENE_TOP_H}Z" fill="#5a0f18"/><path d="M142 ${SCENE_TOP_H}V74Q142 36 180 36Q218 36 218 74V${SCENE_TOP_H}Z" fill="#6e1620" opacity=".6"/>`;
+      o += `<path d="M262 20c14 10 24 26 30 46M300 8c10 8 18 22 22 38" stroke="#b79a62" stroke-width="1.2" fill="none"/>`;
+      o += flower(300, 24, 6, "#e8c27a", "#fff1c4", 6) + flower(330, 60, 5, "#e8c27a", "#fff1c4", 6) + flower(86, 40, 5, "#e8c27a", "#fff1c4", 6);
+      return _svg(SCENE_TOP_H, o);
+    },
+    bot: () => {
+      const R = _r(93);
+      let o = `<path d="M130 300V150Q130 100 180 100Q230 100 230 150V300Z" fill="#5a0f18"/><path d="M142 300V152Q142 114 180 114Q218 114 218 152V300Z" fill="#6e1620" opacity=".6"/>`;
+      o += `<path d="M0 270H400V300H0Z" fill="#c9bba5" opacity=".5"/>`;
+      /* train: long cape sweeping back to the left */
+      o += `<path d="M232 120Q246 190 226 276Q120 296 20 292Q90 260 140 196Q170 150 200 118Z" fill="#8c1d3a"/>`;
+      o += `<path d="M236 128Q242 200 226 270Q140 288 60 288Q110 250 156 190Q184 150 210 124Z" fill="#a82448" opacity=".85"/>`;
+      for (let i = 0; i < 26; i++) { const t = i / 25; o += `<circle cx="${_n(228 - t * 170)}" cy="${_n(274 + Math.sin(t * 3) * 6 - t * 4)}" r="2" fill="#e3b341" opacity=".85"/>`; }
+      o += `<path d="M224 130Q232 200 222 270M200 150Q216 220 212 274" stroke="#e3b341" stroke-width="1" fill="none" opacity=".7"/>`;
+      o += groom(272, 292, 1.12, { coat: "#f4e7a8", trim: "#c79a45", pants: "#f4e7a8", hair: "#241812" });
+      o += bride(206, 292, 1.12, { skirt: "#8c1d3a", skirt2: "#d48aa0", blouse: "#a82448", dup: "#8c1d3a", gown: true });
+      return _svg(SCENE_BOT_H, o);
+    },
+  },
 };
 
 /* Rasterised copies, so the video can draw them and the card can use them as backgrounds. */
@@ -397,4 +437,21 @@ function artImages(id) {
     _artImgs[id] = Promise.all([load(ART[id].top()), load(ART[id].bot())]).then(([top, bot]) => ({ top, bot }));
   }
   return _artImgs[id];
+}
+
+/* Round vignette for each ceremony, in the style of an illustrated timeline. */
+const _medalCache = {};
+function medalUri(key) {
+  if (_medalCache[key]) return _medalCache[key];
+  const sets = {
+    mehndi:     { bg: "#f4dede", g: { coat: "#9fc9a0", trim: "#5f8a56", pants: "#e8f2e4" }, b: { skirt: "#8fbf8a", skirt2: "#cfe6c8", blouse: "#6fae7c", dup: "#4f8f5c" } },
+    sangeet:    { bg: "#e3eaf5", g: { coat: "#9cc3e4", trim: "#4b7fb5", pants: "#e8f1fa" }, b: { skirt: "#8fb7de", skirt2: "#d3e5f5", blouse: "#6f9fcf", dup: "#4f82b5" } },
+    haldi:      { bg: "#fbefc9", g: { coat: "#f7d84a", trim: "#c79a1a", pants: "#fdf6e4" }, b: { skirt: "#f2b705", skirt2: "#fde58a", blouse: "#f39c12", dup: "#e08a0a" } },
+    wedding:    { bg: "#f6dada", g: { coat: "#efd9b0", trim: "#c79a45", pants: "#f6ecd8", turban: "#c0392b" }, b: { skirt: "#c2185b", skirt2: "#f1a9bd", blouse: "#d8265f", dup: "#b3123f" } },
+    reception:  { bg: "#f2ddd8", g: { tux: true, coat: "#15151a" }, b: { gown: true, skirt: "#f1b39d" } },
+    engagement: { bg: "#efe3f2", g: { coat: "#d9c3e8", trim: "#8c63b3", pants: "#f1e8f7" }, b: { skirt: "#c9a3dc", skirt2: "#ead8f3", blouse: "#b47fcf", dup: "#8c4fb0" } },
+  };
+  const c = sets[key] || sets.wedding;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><clipPath id="m"><circle cx="50" cy="50" r="46"/></clipPath></defs><circle cx="50" cy="50" r="46" fill="${c.bg}"/><g clip-path="url(#m)">${groom(37, 96, 0.52, c.g)}${bride(63, 96, 0.52, c.b)}</g><circle cx="50" cy="50" r="46" fill="none" stroke="#d99aa3" stroke-width="2"/></svg>`;
+  return (_medalCache[key] = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg));
 }

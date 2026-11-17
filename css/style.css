@@ -657,6 +657,7 @@ body.guest { background: var(--c-bg2, #2a1512); min-height: 100svh; }
 .inv-events { list-style: none; padding: 0; margin: 0; display: grid; gap: .7em; }
 .inv-events li { position: relative; display: grid; gap: .15em; padding: 1em .9em .95em; border-radius: 14px; background: color-mix(in srgb, var(--c-ink) 5%, transparent); border: 1px solid color-mix(in srgb, var(--c-accent) 32%, transparent); box-shadow: 0 10px 24px -18px rgba(0, 0, 0, .45); }
 .inv-events li::before { content: ""; position: absolute; top: -1px; left: 50%; width: 3.2em; height: 2px; margin-left: -1.6em; background: var(--c-foil); border-radius: 2px; }
+.ev-medal { width: 4.4em; height: 4.4em; margin: -.2em auto .3em; justify-self: center; }
 .inv-events strong { font-size: 1.18em; color: var(--c-accent); }
 .inv-events span { color: var(--c-soft); font-size: .92em; }
 .countdown { display: flex; justify-content: center; gap: .7em; margin: 1.6em 0 .4em; }
