@@ -14,6 +14,15 @@ const TEMPLATES = {
   kanjivaram: { name: "Temple Silk",    bg: "#8a1020", bg2: "#560711", ink: "#fff1d6", accent: "#f0b429", soft: "rgba(255,241,214,.8)",  frame: "temple",  orn: "mandala", fx: "sparkle", latin: "Marcellus" },
   henna:      { name: "Mehndi",         bg: "#f4ecd8", bg2: "#e4d4ad", ink: "#353216", accent: "#515d12", soft: "#5f5a36",               frame: "corners", orn: "leaf",    fx: "leaves",  latin: "Cormorant Garamond", petal: "#8a9a3a" },
   minimal:    { name: "Sindoor Minimal",bg: "#ffffff", bg2: "#f5f1ec", ink: "#1c1917", accent: "#b3261e", soft: "#57534e",               frame: "line",    orn: "line",    fx: "none",    latin: "Playfair Display" },
+  /* Illustrated designs: scenery from js/scenes.js, no frame. */
+  a_mandap:   { name: "Garden Mandap",  art: "mandap",     bg: "#fcf5e8", bg2: "#f1e0c0", ink: "#47311e", accent: "#8a5420", soft: "#6e5238",               frame: "none", orn: "lotus",   fx: "petals",  latin: "Cormorant Garamond", names: "Great Vibes", petal: "#f6efe0" },
+  a_lantern:  { name: "Lantern Garden", art: "lantern",    bg: "#fbf8ee", bg2: "#efe8d0", ink: "#3d3a22", accent: "#a1432a", soft: "#645f40",               frame: "none", orn: "leaf",    fx: "leaves",  latin: "Cormorant Garamond", names: "Great Vibes", petal: "#9fbf8a" },
+  a_chandelier:{ name: "Crystal Night", art: "chandelier", bg: "#4d433a", bg2: "#2c2621", ink: "#f6ecd6", accent: "#e6c67e", soft: "rgba(246,236,214,.78)", frame: "none", orn: "mandala", fx: "sparkle", latin: "Cormorant Garamond", names: "Great Vibes" },
+  a_haldi:    { name: "Haldi Yellow",   art: "haldi",      bg: "#fff9e6", bg2: "#fbe8a6", ink: "#4a3410", accent: "#a5520a", soft: "#76591f",               frame: "none", orn: "lotus",   fx: "petals",  latin: "Playfair Display",   names: "Great Vibes", petal: "#f4b400" },
+  a_pond:     { name: "Royal Pond",     art: "pond",       bg: "#f8f1e1", bg2: "#e4ecdc", ink: "#2f3a30", accent: "#96344f", soft: "#556256",               frame: "none", orn: "lotus",   fx: "petals",  latin: "Cormorant Garamond", names: "Great Vibes", petal: "#f3b2c3" },
+  a_noir:     { name: "Reception Noir", art: "noir",       bg: "#1f1d33", bg2: "#0c0b18", ink: "#f4ecd8", accent: "#e6c67e", soft: "rgba(244,236,216,.78)", frame: "none", orn: "line",    fx: "sparkle", latin: "Playfair Display",   names: "Great Vibes" },
+  a_canopy:   { name: "Pink Canopy",    art: "canopy",     bg: "#fef3f0", bg2: "#f6d9d8", ink: "#4a2530", accent: "#a3274f", soft: "#7a4a56",               frame: "none", orn: "lotus",   fx: "petals",  latin: "Playfair Display",   names: "Great Vibes", petal: "#f1a1b6" },
+  a_fiesta:   { name: "Mehendi Fiesta", art: "fiesta",     bg: "#fff7ea", bg2: "#fde6c0", ink: "#4a2410", accent: "#ae2159", soft: "#7a4a2c",               frame: "none", orn: "leaf",    fx: "petals",  latin: "Playfair Display",   names: "Great Vibes", petal: "#f6a21a" },
 };
 
 /* Whose card it is decides who is named first: o === "g" puts the groom first. */
@@ -141,6 +150,10 @@ function applyPalette(el, id) {
   el.style.setProperty("--c-latin", `"${p.latin}"`);
   el.style.setProperty("--c-names", `"${p.names || p.latin}"`);
   el.style.setProperty("--c-names-w", p.names ? "400" : "700");
+  const art = p.art && typeof artUris === "function" ? artUris(p.art) : null;
+  el.classList.toggle("has-art", !!art);
+  if (art) { el.style.setProperty("--art-top", art.top); el.style.setProperty("--art-bot", art.bot); }
+  else { el.style.removeProperty("--art-top"); el.style.removeProperty("--art-bot"); }
 }
 
 /* Font weights available per Google family (script faces ship a single weight). */

@@ -13,7 +13,8 @@ Live: https://yashty.github.io/weedinginvite/
   - Download it as **MP4 (H.264)** where the browser supports it, otherwise as WebM.
   - On phones, the **Share video** button sends the file straight to WhatsApp.
   - Guests can tap **Watch video** on the invite page.
-- **10 designs:** Royal Maroon, Marigold, Emerald Garden, Ivory Blush, Midnight Gold, Peacock, Lotus, Temple Silk, Mehndi and Sindoor Minimal.
+- **18 designs:** ten classic ones (Royal Maroon, Marigold, Emerald Garden, Ivory Blush, Midnight Gold, Peacock, Lotus, Temple Silk, Mehndi and Sindoor Minimal) and eight illustrated ones with a faceless couple: Garden Mandap, Lantern Garden, Crystal Night, Haldi Yellow, Royal Pond, Reception Noir, Pink Canopy and Mehendi Fiesta.
+  - The illustrated designs are drawn as SVG in `js/scenes.js` (a top piece and a bottom piece), used by the card, the images and the video. Add one by adding an entry to `ART` and a `TEMPLATES` entry with `art` set. They are for invitations only, so the biodata editor doesn't list them.
   - Each design has its own colours, frame (double, arch, corners, temple border or line), ornament and background effect.
   - The card and the video draw from the same definition in `js/invite.js`.
 - **Guest versions:** make one invite with every ceremony, then add versions for different guests with some ceremonies left out, such as "Friends, without Sangeet" or "Office, without Sagai".

@@ -40,7 +40,7 @@
 
   /* ---------- design swatches ---------- */
   function renderSwatches() {
-    $("swatches").innerHTML = Object.entries(TEMPLATES).map(([id, p]) => `
+    $("swatches").innerHTML = Object.entries(TEMPLATES).filter(([, p]) => !p.art).map(([id, p]) => `
       <button type="button" class="swatch" data-tpl="${id}" aria-pressed="${id === data.t}">
         <span class="chip" style="background:linear-gradient(160deg, ${p.bg}, ${p.bg2}); --chip-accent:${p.accent}"><i></i></span>
         <span>${p.name}</span>

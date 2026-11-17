@@ -99,6 +99,7 @@ class InviteVideo {
     this.data = data;
     this.lang = lang || data.l || "en";
     this.p = tpl(data.t);
+    this.art = null;
     const fams = this.lang === "en" ? [this.p.latin] : [LANGS[this.lang].font, this.p.latin];
     this.family = fams.map((f) => `"${f}"`).join(", ") + ", serif";
     this.nameFamily = [this.p.names || this.p.latin, ...fams].map((f) => `"${f}"`).join(", ") + ", serif";
@@ -129,6 +130,7 @@ class InviteVideo {
     if (this.qrUrl && !this.qrImg && typeof qrBitmap === "function") {
       try { this.qrImg = await qrBitmap(this.qrUrl, this.data.t, this.data.qs); } catch (_) { this.qrImg = null; }
     }
+    this.art = this.p.art && typeof artImages === "function" ? await artImages(this.p.art) : null;
     await Promise.all(fams.flatMap((f) => ["400", "700"].map((w) => document.fonts.load(`${w} 40px "${f}"`, sample).catch(() => null))));
   }
 
@@ -208,7 +210,20 @@ class InviteVideo {
     rg.addColorStop(1, this.hexA(p.accent, 0));
     ctx.fillStyle = rg;
     ctx.fillRect(0, 0, VIDEO_W, VIDEO_H);
+    this.artDraw();
     this.particlesDraw(time);
+  }
+
+  /* Illustrated designs: scenery along the top and bottom edges. */
+  artDraw() {
+    const a = this.art;
+    if (!a) return;
+    const { ctx } = this;
+    if (a.top) ctx.drawImage(a.top, 0, 0, VIDEO_W, VIDEO_W * SCENE_TOP_H / 400);
+    if (a.bot) {
+      const w = VIDEO_W * 0.9, h = w * SCENE_BOT_H / 400;
+      ctx.drawImage(a.bot, (VIDEO_W - w) / 2, VIDEO_H - h, w, h);
+    }
   }
 
   hexA(hex, a) {
@@ -370,7 +385,7 @@ class InviteVideo {
     }
 
     if (sc.id === "close") {
-      let y = this.qrImg ? cy - 360 : cy - 240;
+      let y = this.qrImg ? cy - (this.art ? 420 : 360) : cy - 240;
       y += this.text(T("inv_save"), y, { size: 28, color: p.accent, k: k(0.1) }) + 50;
       y += this.text(`${nameOrder(data)[0] || ""} ${T("inv_and")} ${nameOrder(data)[1] || ""}`, y, { size: 72, weight: 700, color: p.accent, k: k(0.3, 1.1), maxW: VIDEO_W - 140, names: true });
       this.ornament(y + 10, 1.5, k(0.7, 1.2));
@@ -381,7 +396,7 @@ class InviteVideo {
       if (this.qrImg) {
         const e = ease(k(1.7, 1));
         const size = 230;
-        const top = Math.min(y + 40, VIDEO_H - 110 - size);
+        const top = Math.min(y + 40, VIDEO_H - (this.art ? 720 : 110) - size);
         const x = (VIDEO_W - size) / 2;
         ctx.save();
         ctx.globalAlpha = e;
